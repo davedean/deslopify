@@ -1,0 +1,17 @@
+Testing various dash formats and spacings:
+
+1. Em-dash with no spaces—like this example.
+2. Em-dash with spaces — like this example.
+3. En-dash with no spaces–like this example.
+4. En-dash with spaces – like this example.
+5. This is a range: 1–10 (should stay as en-dash)
+6. Word—word (em-dash between words)
+7. Word — word (em-dash with spaces)
+8. Word–word (en-dash between words)
+9. Word – word (en-dash with spaces)
+
+Multiple  spaces    should   be   collapsed   properly.
+    But indentation at the start of lines should be preserved.
+        And code blocks too.
+
+Certainly! Let me help you with your question.

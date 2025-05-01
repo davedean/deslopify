@@ -1,0 +1,7 @@
+Certainly! Let me help you with your question.
+
+This file contains some common slop—phrases and characters that can be cleaned up.
+
+Of course! The em-dash above and  this  extra   spacing   should be fixed.
+
+Honestly; that's all there is to it. And these non-breaking spaces → should be replaced too.
