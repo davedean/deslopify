@@ -1,0 +1,12 @@
+Welcome to the wonderful world of geometry!
+
+For a beginner, I'd recommend starting with some basic shapes that are easy to understand and visualize. Here are a few:
+
+1. **Square**: A square is a great shape to start with, as it has four equal sides and four right angles (90-degree angles). It's symmetrical and easy to draw.
+2. **Circle**: A circle is a simple, continuous curved shape that's easy to understand. It's defined by a single curved line that is equidistant from a central point (the center).
+3. **Triangle**: A triangle is another fundamental shape in geometry. It's a polygon with three sides and three angles. You can start with a simple equilateral triangle (all sides equal) or a right triangle (one 90-degree angle).
+4. **Rectangle**: A rectangle is similar to a square, but with four sides of unequal length (two pairs of equal sides). It's a great shape to learn about properties like area and perimeter.
+
+These shapes will give you a solid foundation in geometry and help you understand more complex concepts as you progress.
+
+Which one of these shapes would you like to explore further? Or do you have a specific aspect of geometry in mind (e.g., angles, symmetry, measurements)?
