@@ -15,11 +15,19 @@ export class PhraseRemover {
   constructor(patterns?: PhrasePattern[]) {
     // Default patterns if none provided
     this.patterns = patterns || [
-      // Only remove the most egregious phrases that add no value
+      // Remove common AI introduction slop
       { pattern: /^Certainly! /i, position: 'start' },
       { pattern: /^I'd be happy to /i, position: 'start' },
-      { pattern: /^I'll help you /i, position: 'start' }
-      // Preserve other phrases for more subtle processing
+      { pattern: /^I'll help you /i, position: 'start' },
+      { pattern: /^Hey there,? /i, position: 'start' },
+      { pattern: /^In conclusion,? /i, position: 'start' },
+      
+      // Remove common filler phrases
+      { pattern: /super thrilled|incredible journey/i, position: 'anywhere' },
+      { pattern: /quick deep dive/i, position: 'anywhere' },
+      { pattern: /But wait, there's more!/i, position: 'anywhere' },
+      { pattern: /—and this is crucial—/i, position: 'anywhere' },
+      { pattern: /–and this is crucial–/i, position: 'anywhere' }
     ];
   }
 

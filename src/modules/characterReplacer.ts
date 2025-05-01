@@ -15,6 +15,8 @@ export class CharacterReplacer {
   constructor(mappings?: CharacterMapping[]) {
     // Default mappings if none provided
     this.mappings = mappings || [
+      // Handle emojis
+      { pattern: /[🌟🚀✨💡🙌📈]/g, replacement: '' },
       // Handle em dash (—) and en dash (–) based on context
       // Em dash with spaces on both sides: keep spaces but replace with en dash 
       { pattern: / \u2014 /g, replacement: ' – ' },
