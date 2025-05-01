@@ -18,6 +18,8 @@ let skipCharacterReplacement = false;
 let skipPhraseRemoval = false;
 let skipDateTimeFormatting = false;
 let skipAbbreviationHandling = false;
+let skipPunctuationNormalization = false;
+let fixUnbalancedDelimiters = true; // Default to true
 
 // Process arguments
 for (let i = 0; i < args.length; i++) {
@@ -35,6 +37,10 @@ for (let i = 0; i < args.length; i++) {
     skipDateTimeFormatting = true;
   } else if (arg === '--skip-abbreviations') {
     skipAbbreviationHandling = true;
+  } else if (arg === '--skip-punctuation') {
+    skipPunctuationNormalization = true;
+  } else if (arg === '--no-fix-unbalanced') {
+    fixUnbalancedDelimiters = false;
   } else if (arg === '--help' || arg === '-h') {
     printHelp();
     process.exit(0);
@@ -49,13 +55,15 @@ Deslopify - Clean up text by removing/translating common "slop" patterns
 Usage: deslopify [options]
 
 Options:
-  -i, --input <file>   Input file (if not provided, reads from stdin)
-  -o, --output <file>  Output file (if not provided, writes to stdout)
-  --skip-chars         Skip character replacements
-  --skip-phrases       Skip phrase removals
-  --skip-datetime      Skip date/time format standardization
-  --skip-abbreviations Skip abbreviation and time zone handling
-  -h, --help           Show this help message
+  -i, --input <file>     Input file (if not provided, reads from stdin)
+  -o, --output <file>    Output file (if not provided, writes to stdout)
+  --skip-chars           Skip character replacements
+  --skip-phrases         Skip phrase removals
+  --skip-datetime        Skip date/time format standardization
+  --skip-abbreviations   Skip abbreviation and time zone handling
+  --skip-punctuation     Skip punctuation normalization
+  --no-fix-unbalanced    Don't fix unbalanced quotes and parentheses
+  -h, --help             Show this help message
   
 Examples:
   deslopify < input.txt > output.txt
@@ -75,7 +83,9 @@ async function main(): Promise<void> {
       skipCharacterReplacement,
       skipPhraseRemoval,
       skipDateTimeFormatting,
-      skipAbbreviationHandling
+      skipAbbreviationHandling,
+      skipPunctuationNormalization,
+      fixUnbalancedDelimiters
     };
     
     // Process the text

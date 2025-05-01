@@ -37,6 +37,21 @@ describe('Deslopify', () => {
       const expected = 'This - is a test.';
       expect(deslopify(input)).toBe(expected);
     });
+    
+    it('should normalize excessive punctuation', () => {
+      const input = 'This is amazing!!! Is it really???';
+      const expected = 'This is amazing! Is it really?';
+      expect(deslopify(input)).toBe(expected);
+    });
+    
+    it('should fix unbalanced delimiters', () => {
+      const input = 'This is a (parenthetical example with "a quote';
+      
+      // Just verify that it adds closing parenthesis and quote
+      const result = deslopify(input);
+      expect(result).toContain(')');
+      expect(result).toContain('"a quote"');
+    });
   });
 
   describe('Configuration options', () => {
@@ -50,6 +65,18 @@ describe('Deslopify', () => {
       const input = 'Certainly! This is a test.';
       const expected = 'Certainly! This is a test.';
       expect(deslopify(input, { skipPhraseRemoval: true })).toBe(expected);
+    });
+    
+    it('should skip punctuation normalization when configured', () => {
+      const input = 'This is amazing!!! Is it really???';
+      const expected = 'This is amazing!!! Is it really???';
+      expect(deslopify(input, { skipPunctuationNormalization: true })).toBe(expected);
+    });
+    
+    it('should not fix unbalanced delimiters when configured', () => {
+      const input = 'This is a (parenthetical example';
+      const expected = 'This is a (parenthetical example';
+      expect(deslopify(input, { fixUnbalancedDelimiters: false })).toBe(expected);
     });
 
     it('should use custom character mappings when provided', () => {
@@ -73,6 +100,17 @@ describe('Deslopify', () => {
       };
       expect(deslopify(input, options)).toBe(expected);
     });
+    
+    it('should use custom punctuation mappings when provided', () => {
+      const input = 'Very very exciting.';
+      const expected = 'Extremely exciting.';
+      const options = {
+        customPunctuationMappings: [
+          { pattern: /[Vv]ery\s+very\b/g, replacement: 'Extremely' }
+        ]
+      };
+      expect(deslopify(input, options)).toBe(expected);
+    });
   });
 
   describe('Advanced usage', () => {
@@ -80,15 +118,28 @@ describe('Deslopify', () => {
       const processor = new Deslopifier();
       processor.addCharacterMapping(/\*/g, '•');
       processor.addPhrasePattern(/^In conclusion, /i, 'start');
+      processor.addPunctuationMapping(/\bvery\s+very\b/g, 'extremely');
 
-      const input = 'In conclusion, this * is a test.';
-      const expected = 'this • is a test.';
+      const input = 'In conclusion, this * is very very good.';
+      const expected = 'this • is extremely good.';
       expect(processor.process(input)).toBe(expected);
     });
 
     it('should trim leading and trailing whitespace', () => {
       const input = '  This is a test.  ';
       const expected = 'This is a test.';
+      expect(deslopify(input)).toBe(expected);
+    });
+    
+    it('should normalize mixed exclamation and question marks', () => {
+      const input = 'What!?!?! Really?!?!';
+      const expected = 'What?! Really?!';
+      expect(deslopify(input)).toBe(expected);
+    });
+    
+    it('should normalize ellipsis with too many dots', () => {
+      const input = 'And then.......... it stopped.';
+      const expected = 'And then... it stopped.';
       expect(deslopify(input)).toBe(expected);
     });
   });

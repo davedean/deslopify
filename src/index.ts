@@ -8,16 +8,20 @@ import { CharacterReplacer, CharacterMapping } from './modules/characterReplacer
 import { PhraseRemover, PhrasePattern } from './modules/phraseRemover';
 import { DateTimeFormatter, DateTimeMapping } from './modules/dateTimeFormatter';
 import { AbbreviationHandler, AbbreviationMapping } from './modules/abbreviationHandler';
+import { PunctuationNormalizer, PunctuationMapping } from './modules/punctuationNormalizer';
 
 export interface DeslopifierOptions {
   customCharacterMappings?: CharacterMapping[];
   customPhrasePatterns?: PhrasePattern[];
   customDateTimeMappings?: DateTimeMapping[];
   customAbbreviationMappings?: AbbreviationMapping[];
+  customPunctuationMappings?: PunctuationMapping[];
   skipCharacterReplacement?: boolean;
   skipPhraseRemoval?: boolean;
   skipDateTimeFormatting?: boolean;
   skipAbbreviationHandling?: boolean;
+  skipPunctuationNormalization?: boolean;
+  fixUnbalancedDelimiters?: boolean;
 }
 
 export class Deslopifier {
@@ -25,6 +29,7 @@ export class Deslopifier {
   private phraseRemover: PhraseRemover;
   private dateTimeFormatter: DateTimeFormatter;
   private abbreviationHandler: AbbreviationHandler;
+  private punctuationNormalizer: PunctuationNormalizer;
   private options: DeslopifierOptions;
 
   constructor(options: DeslopifierOptions = {}) {
@@ -35,6 +40,10 @@ export class Deslopifier {
     this.phraseRemover = new PhraseRemover(options.customPhrasePatterns);
     this.dateTimeFormatter = new DateTimeFormatter(options.customDateTimeMappings);
     this.abbreviationHandler = new AbbreviationHandler(options.customAbbreviationMappings);
+    this.punctuationNormalizer = new PunctuationNormalizer(
+      options.customPunctuationMappings, 
+      { fixUnbalanced: options.fixUnbalancedDelimiters }
+    );
   }
 
   /**
@@ -61,6 +70,11 @@ export class Deslopifier {
     // Apply abbreviation handling unless disabled
     if (!this.options.skipAbbreviationHandling) {
       result = this.abbreviationHandler.process(result);
+    }
+    
+    // Apply punctuation normalization unless disabled
+    if (!this.options.skipPunctuationNormalization) {
+      result = this.punctuationNormalizer.normalize(result);
     }
     
     // Trim any leading/trailing whitespace
@@ -94,6 +108,13 @@ export class Deslopifier {
   public addAbbreviationMapping(pattern: RegExp, replacement: string, preserveCase: boolean = false): void {
     this.abbreviationHandler.addMapping(pattern, replacement, preserveCase);
   }
+  
+  /**
+   * Add a custom punctuation mapping
+   */
+  public addPunctuationMapping(pattern: RegExp, replacement: string | ((match: string, ...args: any[]) => string)): void {
+    this.punctuationNormalizer.addMapping(pattern, replacement);
+  }
 }
 
 // Default export for easier importing
@@ -103,4 +124,10 @@ export default function deslopify(text: string, options: DeslopifierOptions = {}
 }
 
 // Export types and classes for advanced usage
-export { CharacterMapping, PhrasePattern, DateTimeMapping, AbbreviationMapping };
+export { 
+  CharacterMapping, 
+  PhrasePattern, 
+  DateTimeMapping, 
+  AbbreviationMapping,
+  PunctuationMapping 
+};
