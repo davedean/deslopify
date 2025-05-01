@@ -59,16 +59,36 @@ npm run build
 node dist/cli.js < tests/sample-input.txt
 ```
 
+## Git Workflow
+
+- Always create a new feature branch for changes
+- Name branches with a descriptive prefix like `feature/`, `fix/`, or `docs/`
+- After making changes, commit them with a descriptive message
+- Push the branch to GitHub before merging
+
+```bash
+# Create a new feature branch
+git checkout -b feature/new-feature-name
+
+# After making changes, commit them
+git add .
+git commit -m "Add descriptive commit message"
+
+# Push the branch to GitHub
+git push -u origin feature/new-feature-name
+```
+
 ## Notes
 
 - This is a text processing utility for removing common "slop" patterns
 - Follow the implementation plan in PLAN.md
 - Keep code modular to allow for easy addition of new replacement patterns
-- The deslopify tool processes text through four main components:
+- The deslopify tool processes text through five main components:
   1. Character Replacer: Handles character-level replacements (dashes, spaces, bullet points, etc.)
   2. Phrase Remover: Removes common phrases that add verbosity
   3. Date/Time Formatter: Standardizes date and time formats
   4. Abbreviation Handler: Ensures consistent handling of abbreviations and technical terms
+  5. Punctuation Normalizer: Standardizes punctuation usage
 - When adding new patterns, use the appropriate module based on pattern type
 
 ## Sample Files
