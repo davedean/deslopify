@@ -64,7 +64,17 @@ node dist/cli.js < tests/sample-input.txt
 - This is a text processing utility for removing common "slop" patterns
 - Follow the implementation plan in PLAN.md
 - Keep code modular to allow for easy addition of new replacement patterns
-- The deslopify tool processes text through two main components:
-  1. Character Replacer: Handles character-level replacements (dashes, spaces, etc.)
+- The deslopify tool processes text through four main components:
+  1. Character Replacer: Handles character-level replacements (dashes, spaces, bullet points, etc.)
   2. Phrase Remover: Removes common phrases that add verbosity
+  3. Date/Time Formatter: Standardizes date and time formats
+  4. Abbreviation Handler: Ensures consistent handling of abbreviations and technical terms
 - When adding new patterns, use the appropriate module based on pattern type
+
+## Sample Files
+The `samples/` directory contains various text samples from different models to test deslopification:
+
+```bash
+# Process a sample file
+npm run build && node dist/cli.js < samples/sample-o3-equinox.txt
+```
