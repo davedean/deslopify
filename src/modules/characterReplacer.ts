@@ -34,6 +34,10 @@ export class CharacterReplacer {
       // En dash without spaces in other contexts: add spaces around dash
       { pattern: /\u2013/g, replacement: ' - ' },
       
+      // Convert smart (curly) quotes to normal (straight) quotes
+      { pattern: /[\u201C\u201D]/g, replacement: '"' }, // Convert left and right double quotes to straight quotes
+      { pattern: /[\u2018\u2019]/g, replacement: "'" }, // Convert left and right single quotes to straight quotes
+      
       // Standardize bullet points and list markers
       { pattern: /^(\s*)•\s+/gm, replacement: '$1• ' }, // Standardize bullet points with single space
       { pattern: /^(\s*)·\s+/gm, replacement: '$1• ' }, // Convert middle dot to standard bullet

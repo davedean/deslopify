@@ -3,11 +3,13 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
 # Build output
 dist/
 coverage/
 .nyc_output/
+*.tsbuildinfo
 
 # IDE files
 .vscode/
@@ -17,5 +19,20 @@ coverage/
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+processed-*.txt
+temp/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Misc
 EOF < /dev/null
 **/.claude/settings.local.json

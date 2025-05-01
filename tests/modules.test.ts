@@ -20,6 +20,12 @@ describe('CharacterReplacer', () => {
     expect(replacer.replace('Great job! 🚀'))
       .toBe('Great job! ');
   });
+  
+  test('converts smart quotes to normal quotes', () => {
+    const input = '\u201CSmart double quotes\u201D and \u2018smart single quotes\u2019';
+    expect(replacer.replace(input))
+      .toBe('"Smart double quotes" and \'smart single quotes\'');
+  });
 });
 
 describe('PhraseRemover', () => {

@@ -88,6 +88,7 @@ Based on analysis of newer AI model outputs, these additional slop patterns shou
    - Reduce multiple exclamation marks to single marks
    - Standardize excessive question marks
    - Fix unbalanced quotes and parentheses
+   - Convert smart (curly) quotes to normal (straight) quotes
 
 6. **Layout standardization**
    - Normalize inconsistent paragraph spacing
@@ -103,8 +104,32 @@ Add flag options to allow users to customize slop removal:
 --skip-phrase-removals      Skip phrase removals
 --skip-date-formatting      Skip date/time formatting
 --skip-abbreviations        Skip abbreviation handling
+--skip-punctuation          Skip punctuation normalization
+--no-fix-unbalanced         Don't fix unbalanced quotes and parentheses
 --remove-reasoning-traces   Remove reasoning trace sections (default: true)
 --remove-all-emoji          Remove all emoji characters (default: true)  
 --remove-overused-emoji     Remove only overused emoji (default: false)
 --remove-markdown-formatting Remove bold/italics formatting (default: false)
 ```
+
+## Repository and CI/CD Setup
+
+1. **GitHub Repository Setup**
+   - Configure repository at https://github.com/davedean/deslopify/
+   - Add proper README.md, LICENSE, and CONTRIBUTING.md files
+   - Set up branch protection rules for main branch
+   - Configure repository settings for collaborators and permissions
+
+2. **GitHub Workflows**
+   - Set up test/build workflow that runs on push and pull requests
+     - Run TypeScript type checking
+     - Run all tests
+     - Report test coverage
+   - Set up release pipeline for publishing to npm
+     - Automated versioning based on semantic versioning
+     - Generate release notes
+     - Publish package to npm registry
+   - Add PR approval workflow
+     - Require tests to pass
+     - Automated code review checks
+     - Lint and formatting validation
