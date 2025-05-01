@@ -50,3 +50,8 @@ The Deslopifier will be a utility that cleans up text by removing or translating
 3. Create a configuration file format for persistent settings
 4. Add context-aware replacements
 5. Implement batch processing for multiple files
+6. Add bullet point and list formatting standardization
+7. Improve handling of date/time formats
+8. Add special character preservation for technical/scientific content
+9. Implement smart handling of abbreviations and time zones
+10. Add language-specific rules for non-English content

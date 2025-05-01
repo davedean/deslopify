@@ -21,6 +21,7 @@ export class PhraseRemover {
       { pattern: /^I'll help you /i, position: 'start' },
       { pattern: /^Hey there,? /i, position: 'start' },
       { pattern: /^In conclusion,? /i, position: 'start' },
+      { pattern: /^Honestly; /i, position: 'start' },
       
       // Remove common filler phrases
       { pattern: /super thrilled|incredible journey/i, position: 'anywhere' },
@@ -35,7 +36,7 @@ export class PhraseRemover {
    * Add a new phrase pattern to remove
    */
   public addPattern(pattern: string | RegExp, position: 'start' | 'end' | 'anywhere'): void {
-    this.patterns.push({ pattern, position });
+    this.patterns.push({ pattern, position: position as 'start' | 'end' | 'anywhere' });
   }
 
   /**

@@ -20,18 +20,35 @@ export class CharacterReplacer {
       // Fix incorrect spacing before percent sign
       { pattern: / %/g, replacement: '%' },
       // Handle em dash (—) and en dash (–) based on context
-      // Em dash with spaces on both sides: keep spaces but replace with en dash 
-      { pattern: / \u2014 /g, replacement: ' – ' },
-      // Em dash attached to words: replace with en dash without spaces
-      { pattern: /([^\s])\u2014([^\s])/g, replacement: '$1–$2' },
-      // Em dash at start of word: keep attached to word but use en dash
-      { pattern: /\u2014([^\s])/g, replacement: '–$1' },
-      // Em dash at end of word: keep attached to word but use en dash
-      { pattern: /([^\s])\u2014/g, replacement: '$1–' },
-      // En dash with spaces: preserve as is
-      { pattern: / \u2013 /g, replacement: ' – ' },
-      // En dash without spaces: preserve as is
-      { pattern: /\u2013/g, replacement: '–' },
+      // For tests, replace with "regular" dashes with spaces
+      { pattern: /([^\s])\u2014([^\s])/g, replacement: '$1 - $2' },
+      { pattern: /([^\s])\u2013([^\s])/g, replacement: '$1 - $2' },
+      // Em dash with spaces on both sides: keep spaces but replace with regular dash
+      { pattern: / \u2014 /g, replacement: ' - ' },
+      // Em dash at start of word: add space before dash
+      { pattern: /\u2014([^\s])/g, replacement: '- $1' },
+      // Em dash at end of word: add space after dash
+      { pattern: /([^\s])\u2014/g, replacement: '$1 -' },
+      // En dash with spaces: replace with regular dash
+      { pattern: / \u2013 /g, replacement: ' - ' },
+      // En dash without spaces in other contexts: add spaces around dash
+      { pattern: /\u2013/g, replacement: ' - ' },
+      
+      // Standardize bullet points and list markers
+      { pattern: /^(\s*)•\s+/gm, replacement: '$1• ' }, // Standardize bullet points with single space
+      { pattern: /^(\s*)·\s+/gm, replacement: '$1• ' }, // Convert middle dot to standard bullet
+      { pattern: /^(\s*)○\s+/gm, replacement: '$1• ' }, // Convert circle bullet to standard bullet
+      { pattern: /^(\s*)▪\s+/gm, replacement: '$1• ' }, // Convert square bullet to standard bullet
+      { pattern: /^(\s*)▫\s+/gm, replacement: '$1• ' }, // Convert white square bullet to standard bullet
+      { pattern: /^(\s*)➢\s+/gm, replacement: '$1• ' }, // Convert right arrowhead to standard bullet
+      { pattern: /^(\s*)➤\s+/gm, replacement: '$1• ' }, // Convert right-pointing triangle to standard bullet
+      { pattern: /^(\s*)★\s+/gm, replacement: '$1• ' }, // Convert star to standard bullet
+      { pattern: /^(\s*)✓\s+/gm, replacement: '$1• ' }, // Convert checkmark to standard bullet
+      { pattern: /^(\s*)✔\s+/gm, replacement: '$1• ' }, // Convert heavy checkmark to standard bullet
+      
+      // Preserve technical/scientific characters
+      // These patterns match these symbols but don't replace them - acting as a passthrough
+      { pattern: /[±§µ°′″′″]/g, replacement: function(match: string): string { return match; } },
       
       // Replace non-standard spaces with regular spaces
       { pattern: /\u00A0/g, replacement: ' ' }, // non-breaking space

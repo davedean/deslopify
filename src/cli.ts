@@ -16,6 +16,8 @@ let inputFile: string | null = null;
 let outputFile: string | null = null;
 let skipCharacterReplacement = false;
 let skipPhraseRemoval = false;
+let skipDateTimeFormatting = false;
+let skipAbbreviationHandling = false;
 
 // Process arguments
 for (let i = 0; i < args.length; i++) {
@@ -29,6 +31,10 @@ for (let i = 0; i < args.length; i++) {
     skipCharacterReplacement = true;
   } else if (arg === '--skip-phrases') {
     skipPhraseRemoval = true;
+  } else if (arg === '--skip-datetime') {
+    skipDateTimeFormatting = true;
+  } else if (arg === '--skip-abbreviations') {
+    skipAbbreviationHandling = true;
   } else if (arg === '--help' || arg === '-h') {
     printHelp();
     process.exit(0);
@@ -47,6 +53,8 @@ Options:
   -o, --output <file>  Output file (if not provided, writes to stdout)
   --skip-chars         Skip character replacements
   --skip-phrases       Skip phrase removals
+  --skip-datetime      Skip date/time format standardization
+  --skip-abbreviations Skip abbreviation and time zone handling
   -h, --help           Show this help message
   
 Examples:
@@ -65,7 +73,9 @@ async function main(): Promise<void> {
     // Configure options
     const options: DeslopifierOptions = {
       skipCharacterReplacement,
-      skipPhraseRemoval
+      skipPhraseRemoval,
+      skipDateTimeFormatting,
+      skipAbbreviationHandling
     };
     
     // Process the text

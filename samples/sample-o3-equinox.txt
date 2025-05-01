@@ -1,0 +1,17 @@
+Spain, like the rest of the Northern Hemisphere, has two equinoxes every year:
+
+Spring (vernal) equinox – around 20 March
+Autumn (fall) equinox – around 22 or 23 September
+Those are the dates practically every year; very rarely they can slip to 19 March or 21 September.
+
+If you want the exact moment for the current year (2024):
+
+Peninsular Spain & Balearic Islands (Madrid time = CET in winter, CEST in summer)
+• Spring equinox: Wednesday 20 March 2024 at 04:06 CET
+• Autumn equinox: Sunday 22 September 2024 at 14:44 CEST
+
+Canary Islands (UTC-1 relative to mainland)
+• Spring equinox: 03:06 WET
+• Autumn equinox: 13:44 WEST
+
+The equinox happens at the same instant worldwide; only the local clock time changes with the time zone.
