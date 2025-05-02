@@ -19,7 +19,10 @@ let skipPhraseRemoval = false;
 let skipDateTimeFormatting = false;
 let skipAbbreviationHandling = false;
 let skipPunctuationNormalization = false;
+let skipEmojiHandling = false;
 let fixUnbalancedDelimiters = true; // Default to true
+let removeAllEmoji = false;
+let removeOverusedEmoji = false;
 
 // Process arguments
 for (let i = 0; i < args.length; i++) {
@@ -41,6 +44,12 @@ for (let i = 0; i < args.length; i++) {
     skipPunctuationNormalization = true;
   } else if (arg === '--no-fix-unbalanced') {
     fixUnbalancedDelimiters = false;
+  } else if (arg === '--skip-emoji') {
+    skipEmojiHandling = true;
+  } else if (arg === '--remove-all-emoji') {
+    removeAllEmoji = true;
+  } else if (arg === '--remove-overused-emoji') {
+    removeOverusedEmoji = true;
   } else if (arg === '--help' || arg === '-h') {
     printHelp();
     process.exit(0);
@@ -62,13 +71,17 @@ Options:
   --skip-datetime        Skip date/time format standardization
   --skip-abbreviations   Skip abbreviation and time zone handling
   --skip-punctuation     Skip punctuation normalization
+  --skip-emoji           Skip emoji handling
   --no-fix-unbalanced    Don't fix unbalanced quotes and parentheses
+  --remove-all-emoji     Remove all emoji characters from text
+  --remove-overused-emoji Remove commonly overused emoji and emoji clusters
   -h, --help             Show this help message
   
 Examples:
   deslopify < input.txt > output.txt
   deslopify --input input.txt --output output.txt
   cat input.txt | deslopify > output.txt
+  deslopify --remove-all-emoji < input.txt > output.txt
   `);
 }
 
@@ -85,7 +98,12 @@ async function main(): Promise<void> {
       skipDateTimeFormatting,
       skipAbbreviationHandling,
       skipPunctuationNormalization,
-      fixUnbalancedDelimiters
+      skipEmojiHandling,
+      fixUnbalancedDelimiters,
+      emojiOptions: {
+        removeAll: removeAllEmoji,
+        removeOverused: removeOverusedEmoji
+      }
     };
     
     // Process the text
