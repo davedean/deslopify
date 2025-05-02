@@ -40,7 +40,7 @@ export class InteractiveMode {
     console.log(chalk.bold(chalk.green('\n=== Deslopifier Interactive Mode ===\n')));
     console.log(`Paste text to process it, or type ${chalk.cyan('h')} for help.`);
     console.log('For multiline input, paste all at once or enter line by line (empty lines are included).');
-    console.log(`Input mode will exit after ~5 seconds of inactivity, or when you press ${chalk.cyan('Ctrl+D')} or ${chalk.cyan('Ctrl+C')}.`);
+    console.log(`Input mode will exit after ~0.5 seconds of inactivity, or when you press ${chalk.cyan('Ctrl+D')} or ${chalk.cyan('Ctrl+C')}.`);
     console.log(`Type ${chalk.cyan('q')} to quit the interactive mode completely.`);
     console.log('Processed text will be copied to your clipboard automatically.\n');
   }
@@ -60,7 +60,7 @@ export class InteractiveMode {
     
     console.log(`${chalk.bold('Input Behavior')}:`);
     console.log(`- Empty lines are included in your input (not used as input termination)`);
-    console.log(`- Input mode will exit after ~5 seconds of inactivity`);
+    console.log(`- Input mode will exit after ~0.5 seconds of inactivity`);
     console.log(`- You can press ${chalk.cyan('Ctrl+D')} or ${chalk.cyan('Ctrl+C')} to finish input manually\n`);
     
     console.log(`${chalk.bold('Batch Mode')}: When enabled, stays in input mode after processing`);
@@ -79,7 +79,6 @@ export class InteractiveMode {
     
     while (this.running) {
       console.log(chalk.green('Waiting for input...') + chalk.dim(' (Paste text or type a command)'));
-      console.log(chalk.dim('For multiline input, paste all text at once or enter line by line. Press Enter on empty line to finish.'));
       
       // Get initial input from user
       let input = '';
@@ -103,11 +102,11 @@ export class InteractiveMode {
         multilineInput = true;
       } else {
         console.log(chalk.dim('Continue entering text. Press Ctrl+D or Ctrl+C to finish input.'));
-        console.log(chalk.dim('Empty lines are included in the input. Input will finish after ~5 seconds of inactivity.'));
+        console.log(chalk.dim('Empty lines are included in the input. Input will finish after ~0.5 seconds of inactivity.'));
         
         let collectingInput = true;
         let lastInputTime = Date.now();
-        const inputTimeoutMs = 5000; // 5 seconds of inactivity timeout
+        const inputTimeoutMs = 500; // 0.5 seconds of inactivity timeout
         
         while (collectingInput) {
           // Set a non-blocking timeout to check for inactivity
@@ -116,7 +115,7 @@ export class InteractiveMode {
             if (Date.now() - lastInputTime >= inputTimeoutMs) {
               collectingInput = false;
               // We can't interrupt readline, but we'll stop adding lines after this
-              console.log(chalk.yellow('\nInput timeout reached. Processing input...'));
+              console.log(chalk.yellow('\nInactivity detected. Processing input...'));
             }
           }, inputTimeoutMs + 100); // Add a little buffer
           
