@@ -96,7 +96,7 @@ describe('InteractiveMode', () => {
   test('should process input after timeout and copy to clipboard', () => {
     // Setup
     jest.useFakeTimers();
-    const clipboardy = require('clipboardy');
+    const clipboardyImport = jest.requireMock('clipboardy');
     
     // Force NODE_ENV to not be 'test' so collectInput runs
     const originalNodeEnv = process.env.NODE_ENV;
@@ -116,7 +116,7 @@ describe('InteractiveMode', () => {
     
     // Verify
     expect(mockDeslopifier.process).toHaveBeenCalledWith('Sample input text');
-    expect(clipboardy.writeSync).toHaveBeenCalledWith('processed:Sample input text');
+    expect(clipboardyImport.writeSync).toHaveBeenCalledWith('processed:Sample input text');
     expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('Processed text copied to clipboard!'));
     
     // Cleanup

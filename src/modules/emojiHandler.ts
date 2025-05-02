@@ -48,7 +48,7 @@ export class EmojiHandler {
       }
       
       // Handle emoji clusters specifically
-      const emojiClusterPattern = /(?:\p{Emoji}[\u{FE0F}\u{1F3FB}-\u{1F3FF}]?){3,}/gu;
+      const emojiClusterPattern = /(?:\p{Emoji}){3,}/gu;
       result = result.replace(emojiClusterPattern, '');
       
       return result;
