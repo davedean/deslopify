@@ -95,7 +95,7 @@ describe('Deslopify', () => {
       const expected = 'this is a test.';
       const options = {
         customPhrasePatterns: [
-          { pattern: /^In summary, /i, position: 'start' as 'start' }
+          { pattern: /^In summary, /i, position: 'start' as const }
         ]
       };
       expect(deslopify(input, options)).toBe(expected);

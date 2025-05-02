@@ -16,7 +16,7 @@ export class CharacterReplacer {
     // Default mappings if none provided
     this.mappings = mappings || [
       // Handle emojis
-      { pattern: /[🌟🚀✨💡🙌📈]/g, replacement: '' },
+      { pattern: /[\u{1F31F}\u{1F680}\u{2728}\u{1F4A1}\u{1F64C}\u{1F4C8}]/gu, replacement: '' },
       // Fix incorrect spacing before percent sign
       { pattern: / %/g, replacement: '%' },
       // Handle em dash (—) and en dash (–) based on context
@@ -36,7 +36,7 @@ export class CharacterReplacer {
       
       // Convert smart (curly) quotes to normal (straight) quotes
       { pattern: /[\u201C\u201D]/g, replacement: '"' }, // Convert left and right double quotes to straight quotes
-      { pattern: /[\u2018\u2019]/g, replacement: "'" }, // Convert left and right single quotes to straight quotes
+      { pattern: /[\u2018\u2019]/g, replacement: '\'' }, // Convert left and right single quotes to straight quotes
       
       // Standardize bullet points and list markers
       { pattern: /^(\s*)•\s+/gm, replacement: '$1• ' }, // Standardize bullet points with single space

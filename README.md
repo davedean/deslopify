@@ -145,6 +145,22 @@ The Deslopifier accepts the following options:
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
+## Publishing to npm
+
+When publishing a new version:
+
+1. Update the version in package.json
+2. Run tests and build the project:
+   ```bash
+   npm run lint && npm test && npm run build
+   ```
+3. Publish to npm:
+   ```bash
+   npm publish
+   ```
+
+The `prepublishOnly` script will automatically run linting, tests, and build before publishing.
+
 ## License
 
 MIT

@@ -81,7 +81,7 @@ export class AbbreviationHandler {
   /**
    * Add a new abbreviation mapping
    */
-  public addMapping(pattern: RegExp, replacement: string, preserveCase: boolean = false): void {
+  public addMapping(pattern: RegExp, replacement: string, preserveCase = false): void {
     this.mappings.push({ pattern, replacement, preserveCase });
   }
 

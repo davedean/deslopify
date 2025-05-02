@@ -41,9 +41,9 @@ describe('PhraseRemover', () => {
 
   test('handles phrase removal at specific positions', () => {
     const customRemover = new PhraseRemover([
-      { pattern: /Testing/, position: 'anywhere' as 'anywhere' },
-      { pattern: /^Start/, position: 'start' as 'start' },
-      { pattern: /End$/, position: 'end' as 'end' }
+      { pattern: /Testing/, position: 'anywhere' as const },
+      { pattern: /^Start/, position: 'start' as const },
+      { pattern: /End$/, position: 'end' as const }
     ]);
 
     expect(customRemover.remove('Start of the Testing sentence End'))

@@ -74,31 +74,46 @@ The Deslopifier is a utility that cleans up text by removing or translating comm
 
 ## Upcoming Features
 
-1. **Reasoning Trace Detection and Handling**
+1. **Interactive Mode**
+   - Implement a persistent interactive mode with the `--interactive` or `-i` flag
+   - Create a terminal-based interface that stays running and waits for input
+   - When content is pasted into the window, automatically deslopify it
+   - Place the processed text into the user's clipboard for immediate use
+   - Add clear visual indicators of when input is expected and when processing is done
+   - Implement a "batch mode" toggle to allow users to paste multiple texts sequentially
+   - Add keyboard shortcuts for:
+     - Quitting the interactive mode (Ctrl+C, q)
+     - Clearing the current input buffer (Ctrl+K)
+     - Toggling settings like verbose output (v)
+     - Showing help information (h)
+   - Provide a status line showing current settings and mode
+   - Include progress indicator for longer texts
+
+2. **Reasoning Trace Detection and Handling**
    - Add a configurable option `--remove-reasoning-traces` (enabled by default)
    - Detect sections with reasoning patterns (like those common in Phi and other models)
    - When enabled, completely remove these sections from output
    - When disabled, leave reasoning sections unmodified
    - Implement detection heuristics for phrases like "Let me think", "I can reason through this"
 
-2. **Emoji Handling**
+3. **Emoji Handling**
    - Add `--remove-all-emoji` option to remove all emoji characters
    - Keep current specific emoji filtering under `--remove-overused-emoji` option
    - Add rules for detecting emoji clusters/overuse
 
-3. **Markdown Formatting Options**
+4. **Markdown Formatting Options**
    - Add a `--remove-markdown-formatting` option
    - Preserve structural markdown (headers, lists, code blocks) when enabled
    - Remove inline formatting (bold, italics, strikethrough)
    - Define heuristics for "excessive formatting" (e.g., > 3 formatting elements per paragraph)
    - Option to normalize but not remove formatting (consistent style)
 
-4. **Layout standardization**
+5. **Layout standardization**
    - Normalize inconsistent paragraph spacing
    - Standardize section headings format
    - Create consistent indentation for lists and quoted content
 
-5. **Custom Configuration Files**
+6. **Custom Configuration Files**
    - Allow users to save custom configuration profiles
    - Support loading configurations from JSON/YAML files
    - Implement presets for different LLM providers
@@ -119,6 +134,7 @@ Current flag options:
 Planned additional options:
 
 ```
+--interactive, -i           Run in interactive mode that watches clipboard (default: false)
 --remove-reasoning-traces   Remove reasoning trace sections (default: true)
 --remove-all-emoji          Remove all emoji characters (default: true)  
 --remove-overused-emoji     Remove only overused emoji (default: false)

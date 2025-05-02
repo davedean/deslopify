@@ -105,7 +105,7 @@ export class Deslopifier {
   /**
    * Add a custom abbreviation mapping
    */
-  public addAbbreviationMapping(pattern: RegExp, replacement: string, preserveCase: boolean = false): void {
+  public addAbbreviationMapping(pattern: RegExp, replacement: string, preserveCase = false): void {
     this.abbreviationHandler.addMapping(pattern, replacement, preserveCase);
   }
   
