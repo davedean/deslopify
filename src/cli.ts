@@ -19,7 +19,11 @@ let skipPhraseRemoval = false;
 let skipDateTimeFormatting = false;
 let skipAbbreviationHandling = false;
 let skipPunctuationNormalization = false;
+let skipLayoutStandardization = false;
 let fixUnbalancedDelimiters = true; // Default to true
+let paragraphSpacing: 'single' | 'double' = 'single';
+let preserveCodeBlocks = true;
+let headingStyle: 'atx' | 'setext' = 'atx';
 
 // Process arguments
 for (let i = 0; i < args.length; i++) {
@@ -39,8 +43,28 @@ for (let i = 0; i < args.length; i++) {
     skipAbbreviationHandling = true;
   } else if (arg === '--skip-punctuation') {
     skipPunctuationNormalization = true;
+  } else if (arg === '--skip-layout') {
+    skipLayoutStandardization = true;
   } else if (arg === '--no-fix-unbalanced') {
     fixUnbalancedDelimiters = false;
+  } else if (arg === '--paragraph-spacing') {
+    const value = args[++i];
+    if (value === 'single' || value === 'double') {
+      paragraphSpacing = value;
+    } else {
+      console.error('Error: paragraph-spacing must be "single" or "double"');
+      process.exit(1);
+    }
+  } else if (arg === '--no-preserve-codeblocks') {
+    preserveCodeBlocks = false;
+  } else if (arg === '--heading-style') {
+    const value = args[++i];
+    if (value === 'atx' || value === 'setext') {
+      headingStyle = value;
+    } else {
+      console.error('Error: heading-style must be "atx" or "setext"');
+      process.exit(1);
+    }
   } else if (arg === '--help' || arg === '-h') {
     printHelp();
     process.exit(0);
@@ -55,19 +79,24 @@ Deslopify - Clean up text by removing/translating common "slop" patterns
 Usage: deslopify [options]
 
 Options:
-  -i, --input <file>     Input file (if not provided, reads from stdin)
-  -o, --output <file>    Output file (if not provided, writes to stdout)
-  --skip-chars           Skip character replacements
-  --skip-phrases         Skip phrase removals
-  --skip-datetime        Skip date/time format standardization
-  --skip-abbreviations   Skip abbreviation and time zone handling
-  --skip-punctuation     Skip punctuation normalization
-  --no-fix-unbalanced    Don't fix unbalanced quotes and parentheses
-  -h, --help             Show this help message
+  -i, --input <file>         Input file (if not provided, reads from stdin)
+  -o, --output <file>        Output file (if not provided, writes to stdout)
+  --skip-chars               Skip character replacements
+  --skip-phrases             Skip phrase removals
+  --skip-datetime            Skip date/time format standardization
+  --skip-abbreviations       Skip abbreviation and time zone handling
+  --skip-punctuation         Skip punctuation normalization
+  --skip-layout              Skip layout standardization
+  --no-fix-unbalanced        Don't fix unbalanced quotes and parentheses
+  --paragraph-spacing <opt>  Set paragraph spacing to "single" or "double" (default: single)
+  --heading-style <opt>      Set heading style to "atx" or "setext" (default: atx)
+  --no-preserve-codeblocks   Don't preserve whitespace in code blocks
+  -h, --help                 Show this help message
   
 Examples:
   deslopify < input.txt > output.txt
   deslopify --input input.txt --output output.txt
+  deslopify --paragraph-spacing double < input.txt > output.txt
   cat input.txt | deslopify > output.txt
   `);
 }
@@ -85,7 +114,13 @@ async function main(): Promise<void> {
       skipDateTimeFormatting,
       skipAbbreviationHandling,
       skipPunctuationNormalization,
-      fixUnbalancedDelimiters
+      skipLayoutStandardization,
+      fixUnbalancedDelimiters,
+      layoutOptions: {
+        paragraphSpacing,
+        preserveCodeBlocks,
+        headingStyle
+      }
     };
     
     // Process the text
