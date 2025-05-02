@@ -65,6 +65,7 @@ node dist/cli.js < tests/sample-input.txt
 - Name branches with a descriptive prefix like `feature/`, `fix/`, or `docs/`
 - After making changes, commit them with a descriptive message
 - Push the branch to GitHub before merging
+- After completing a feature, return to the main branch
 
 ```bash
 # Create a new feature branch
@@ -76,6 +77,9 @@ git commit -m "Add descriptive commit message"
 
 # Push the branch to GitHub
 git push -u origin feature/new-feature-name
+
+# When feature is complete, return to main branch
+git checkout main
 ```
 
 ## Notes
@@ -90,6 +94,12 @@ git push -u origin feature/new-feature-name
   4. Abbreviation Handler: Ensures consistent handling of abbreviations and technical terms
   5. Punctuation Normalizer: Standardizes punctuation usage
 - When adding new patterns, use the appropriate module based on pattern type
+
+## Development Process
+
+- Always research the problem first before implementing
+- Think through the approach and create a plan
+- Before starting work on a plan, confirm with the user unless running in full-auto mode
 
 ## Sample Files
 The `samples/` directory contains various text samples from different models to test deslopification:

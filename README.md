@@ -14,7 +14,7 @@ A utility that cleans up text by removing or translating common "slop" patterns 
 * Condenses multiple spaces while preserving indentation
 * Standardizes bullet points and list formatting
 * Preserves technical and scientific characters (±, §, µ, °, etc.)
-* Removes common emoji or standardizes their usage
+* Detects and removes overused emoji and emoji clusters
 
 ### Phrase Removals
 * Selectively removes only the most egregious phrases like "Certainly! " at the start of text
@@ -73,9 +73,14 @@ deslopify --skip-phrases < input.txt > output.txt
 deslopify --skip-datetime < input.txt > output.txt
 deslopify --skip-abbreviations < input.txt > output.txt
 deslopify --skip-punctuation < input.txt > output.txt
+deslopify --skip-emoji < input.txt > output.txt
 
 # Disable fixing unbalanced delimiters
 deslopify --no-fix-unbalanced < input.txt > output.txt
+
+# Emoji handling options
+deslopify --remove-all-emoji < input.txt > output.txt
+deslopify --remove-overused-emoji < input.txt > output.txt
 ```
 
 ### API Usage
@@ -94,7 +99,14 @@ const processor = new Deslopifier({
   skipDateTimeFormatting: false,
   skipAbbreviationHandling: false,
   skipPunctuationNormalization: false,
+  skipEmojiHandling: false,
   fixUnbalancedDelimiters: true,
+  
+  // Configure emoji handling
+  emojiOptions: {
+    removeAll: false,
+    removeOverused: true
+  },
   
   // Add custom mappings if needed
   customCharacterMappings: [
@@ -120,6 +132,8 @@ processor.addPhrasePattern(/^To be honest,/i, 'start');
 processor.addDateTimeMapping(/\b(\d{1,2})\.(\d{1,2})\.(\d{4})\b/g, '$3-$2-$1');
 processor.addAbbreviationMapping(/\bcentral european time\b/gi, 'CET', false);
 processor.addPunctuationMapping(/\!\?\!\?/g, '!?');
+processor.addOverusedEmojiPattern(/🦄/gu); // Add unicorn emoji to overused list
+processor.setEmojiOptions({ removeAll: true }); // Remove all emoji
 
 const result = processor.process('To be honest, this text has ??? many stars *** in it!!!');
 console.log(result); // 'this text has ? many stars ••• in it!'
@@ -139,7 +153,11 @@ The Deslopifier accepts the following options:
 - `skipDateTimeFormatting`: Skip the date/time formatting step
 - `skipAbbreviationHandling`: Skip the abbreviation handling step
 - `skipPunctuationNormalization`: Skip the punctuation normalization step
+- `skipEmojiHandling`: Skip the emoji handling step
 - `fixUnbalancedDelimiters`: Whether to fix unbalanced quotes and parentheses
+- `emojiOptions`: Configuration for emoji handling
+  - `removeAll`: Remove all emoji characters
+  - `removeOverused`: Remove only overused emoji and emoji clusters
 
 ## Contributing
 

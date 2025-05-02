@@ -9,6 +9,7 @@ import { PhraseRemover, PhrasePattern } from './modules/phraseRemover';
 import { DateTimeFormatter, DateTimeMapping } from './modules/dateTimeFormatter';
 import { AbbreviationHandler, AbbreviationMapping } from './modules/abbreviationHandler';
 import { PunctuationNormalizer, PunctuationMapping } from './modules/punctuationNormalizer';
+import { EmojiHandler, EmojiOptions } from './modules/emojiHandler';
 
 export interface DeslopifierOptions {
   customCharacterMappings?: CharacterMapping[];
@@ -21,7 +22,9 @@ export interface DeslopifierOptions {
   skipDateTimeFormatting?: boolean;
   skipAbbreviationHandling?: boolean;
   skipPunctuationNormalization?: boolean;
+  skipEmojiHandling?: boolean;
   fixUnbalancedDelimiters?: boolean;
+  emojiOptions?: EmojiOptions;
 }
 
 export class Deslopifier {
@@ -30,6 +33,7 @@ export class Deslopifier {
   private dateTimeFormatter: DateTimeFormatter;
   private abbreviationHandler: AbbreviationHandler;
   private punctuationNormalizer: PunctuationNormalizer;
+  private emojiHandler: EmojiHandler;
   private options: DeslopifierOptions;
 
   constructor(options: DeslopifierOptions = {}) {
@@ -44,6 +48,7 @@ export class Deslopifier {
       options.customPunctuationMappings, 
       { fixUnbalanced: options.fixUnbalancedDelimiters }
     );
+    this.emojiHandler = new EmojiHandler(options.emojiOptions);
   }
 
   /**
@@ -75,6 +80,11 @@ export class Deslopifier {
     // Apply punctuation normalization unless disabled
     if (!this.options.skipPunctuationNormalization) {
       result = this.punctuationNormalizer.normalize(result);
+    }
+    
+    // Apply emoji handling unless disabled
+    if (!this.options.skipEmojiHandling) {
+      result = this.emojiHandler.process(result);
     }
     
     // Trim any leading/trailing whitespace
@@ -115,6 +125,20 @@ export class Deslopifier {
   public addPunctuationMapping(pattern: RegExp, replacement: string | ((match: string, ...args: any[]) => string)): void {
     this.punctuationNormalizer.addMapping(pattern, replacement);
   }
+  
+  /**
+   * Set emoji handling options
+   */
+  public setEmojiOptions(options: EmojiOptions): void {
+    this.emojiHandler.setOptions(options);
+  }
+  
+  /**
+   * Add custom emoji pattern to the overused list
+   */
+  public addOverusedEmojiPattern(pattern: RegExp): void {
+    this.emojiHandler.addOverusedPattern(pattern);
+  }
 }
 
 // Default export for easier importing
@@ -129,5 +153,6 @@ export {
   PhrasePattern, 
   DateTimeMapping, 
   AbbreviationMapping,
-  PunctuationMapping 
+  PunctuationMapping,
+  EmojiOptions
 };
