@@ -96,7 +96,7 @@ The Deslopifier is a utility that cleans up text by removing or translating comm
    - When disabled, leave reasoning sections unmodified
    - Implement detection heuristics for phrases like "Let me think", "I can reason through this"
 
-3. **Emoji Handling**
+3. ✅ **Emoji Handling**
    - Add `--remove-all-emoji` option to remove all emoji characters
    - Keep current specific emoji filtering under `--remove-overused-emoji` option
    - Add rules for detecting emoji clusters/overuse
@@ -131,12 +131,13 @@ Current flag options:
 --no-fix-unbalanced       Don't fix unbalanced quotes and parentheses
 ```
 
-Planned additional options:
+Current planned/implemented additional options:
 
 ```
 --interactive, -i           Run in interactive mode that watches clipboard (default: false)
 --remove-reasoning-traces   Remove reasoning trace sections (default: true)
---remove-all-emoji          Remove all emoji characters (default: true)  
+--skip-emoji                Skip emoji handling
+--remove-all-emoji          Remove all emoji characters (default: false)  
 --remove-overused-emoji     Remove only overused emoji (default: false)
 --remove-markdown-formatting Remove bold/italics formatting (default: false)
 ```
@@ -162,3 +163,5 @@ Planned additional options:
 3. Submit a pull request to merge changes into main
 4. Ensure all tests pass before merging
 5. Keep the documentation updated with new features
+6. After completing a feature, return to the main branch
+7. Update CLAUDE.md and PLAN.md to reflect completed work and update task status
