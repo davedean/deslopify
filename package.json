@@ -1,6 +1,6 @@
 {
   "name": "deslopify",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Utility to clean up text by removing or translating common 'slop' patterns",
   "main": "dist/index.js",
   "bin": {
