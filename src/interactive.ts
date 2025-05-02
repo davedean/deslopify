@@ -59,8 +59,8 @@ export class InteractiveMode {
     console.log(`${chalk.cyan('Ctrl+C')}: Exit immediately (may not work in all terminals)\n`);
     
     console.log(`${chalk.bold('Input Behavior')}:`);
-    console.log(`- Empty lines are included in your input (not used as input termination)`);
-    console.log(`- Input mode will exit after ~0.5 seconds of inactivity`);
+    console.log('- Empty lines are included in your input (not used as input termination)');
+    console.log('- Input mode will exit after ~0.5 seconds of inactivity');
     console.log(`- You can press ${chalk.cyan('Ctrl+D')} or ${chalk.cyan('Ctrl+C')} to finish input manually\n`);
     
     console.log(`${chalk.bold('Batch Mode')}: When enabled, stays in input mode after processing`);
@@ -108,20 +108,22 @@ export class InteractiveMode {
         let lastInputTime = Date.now();
         const inputTimeoutMs = 500; // 0.5 seconds of inactivity timeout
         
+        // Set up the inactivity detector
+        const checkInactivity = () => {
+          if (Date.now() - lastInputTime >= inputTimeoutMs) {
+            collectingInput = false;
+            console.log(chalk.yellow('\nInactivity detected. Processing input...'));
+            return true;
+          }
+          return false;
+        };
+        
+        const inactivityInterval = setInterval(checkInactivity, 100);
+        
         while (collectingInput) {
-          // Set a non-blocking timeout to check for inactivity
-          const timeoutId = setTimeout(() => {
-            // Check if we've been inactive for the timeout period
-            if (Date.now() - lastInputTime >= inputTimeoutMs) {
-              collectingInput = false;
-              // We can't interrupt readline, but we'll stop adding lines after this
-              console.log(chalk.yellow('\nInactivity detected. Processing input...'));
-            }
-          }, inputTimeoutMs + 100); // Add a little buffer
-          
           try {
+            // Use a non-blocking read
             const additionalLine = readlineSync.question('');
-            clearTimeout(timeoutId); // Clear the timeout since we got input
             
             // Update the last input time regardless of empty line or not
             lastInputTime = Date.now();
@@ -131,11 +133,13 @@ export class InteractiveMode {
             multilineInput = true;
           } catch (err) {
             // Catch any errors like Ctrl+D/Ctrl+C
-            clearTimeout(timeoutId);
             collectingInput = false;
             console.log(chalk.yellow('\nInput terminated. Processing available input...'));
           }
         }
+        
+        // Clean up interval when we're done collecting input
+        clearInterval(inactivityInterval);
       }
       
       if (multilineInput) {
