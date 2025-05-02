@@ -9,6 +9,7 @@ import { PhraseRemover, PhrasePattern } from './modules/phraseRemover';
 import { DateTimeFormatter, DateTimeMapping } from './modules/dateTimeFormatter';
 import { AbbreviationHandler, AbbreviationMapping } from './modules/abbreviationHandler';
 import { PunctuationNormalizer, PunctuationMapping } from './modules/punctuationNormalizer';
+import { LayoutStandardizer, LayoutMapping, LayoutOptions } from './modules/layoutStandardizer';
 import { EmojiHandler, EmojiOptions } from './modules/emojiHandler';
 
 export interface DeslopifierOptions {
@@ -17,13 +18,16 @@ export interface DeslopifierOptions {
   customDateTimeMappings?: DateTimeMapping[];
   customAbbreviationMappings?: AbbreviationMapping[];
   customPunctuationMappings?: PunctuationMapping[];
+  customLayoutMappings?: LayoutMapping[];
   skipCharacterReplacement?: boolean;
   skipPhraseRemoval?: boolean;
   skipDateTimeFormatting?: boolean;
   skipAbbreviationHandling?: boolean;
   skipPunctuationNormalization?: boolean;
+  skipLayoutStandardization?: boolean;
   skipEmojiHandling?: boolean;
   fixUnbalancedDelimiters?: boolean;
+  layoutOptions?: LayoutOptions;
   emojiOptions?: EmojiOptions;
 }
 
@@ -33,6 +37,7 @@ export class Deslopifier {
   private dateTimeFormatter: DateTimeFormatter;
   private abbreviationHandler: AbbreviationHandler;
   private punctuationNormalizer: PunctuationNormalizer;
+  private layoutStandardizer: LayoutStandardizer;
   private emojiHandler: EmojiHandler;
   private options: DeslopifierOptions;
 
@@ -47,6 +52,10 @@ export class Deslopifier {
     this.punctuationNormalizer = new PunctuationNormalizer(
       options.customPunctuationMappings, 
       { fixUnbalanced: options.fixUnbalancedDelimiters }
+    );
+    this.layoutStandardizer = new LayoutStandardizer(
+      options.customLayoutMappings,
+      options.layoutOptions
     );
     this.emojiHandler = new EmojiHandler(options.emojiOptions);
   }
@@ -80,6 +89,11 @@ export class Deslopifier {
     // Apply punctuation normalization unless disabled
     if (!this.options.skipPunctuationNormalization) {
       result = this.punctuationNormalizer.normalize(result);
+    }
+    
+    // Apply layout standardization unless disabled
+    if (!this.options.skipLayoutStandardization) {
+      result = this.layoutStandardizer.standardize(result);
     }
     
     // Apply emoji handling unless disabled
@@ -127,6 +141,20 @@ export class Deslopifier {
   }
   
   /**
+   * Add a custom layout mapping
+   */
+  public addLayoutMapping(pattern: string | RegExp, replacement: string | ((match: string, ...args: any[]) => string)): void {
+    this.layoutStandardizer.addMapping(pattern, replacement);
+  }
+  
+  /**
+   * Set layout options
+   */
+  public setLayoutOptions(options: LayoutOptions): void {
+    this.layoutStandardizer.setOptions(options);
+  }
+
+  /**
    * Set emoji handling options
    */
   public setEmojiOptions(options: EmojiOptions): void {
@@ -154,5 +182,7 @@ export {
   DateTimeMapping, 
   AbbreviationMapping,
   PunctuationMapping,
+  LayoutMapping,
+  LayoutOptions,
   EmojiOptions
 };
