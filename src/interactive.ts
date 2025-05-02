@@ -39,8 +39,9 @@ export class InteractiveMode {
   private showWelcomeMessage(): void {
     console.log(chalk.bold(chalk.green('\n=== Deslopifier Interactive Mode ===\n')));
     console.log(`Paste text to process it, or type ${chalk.cyan('h')} for help.`);
-    console.log('For multiline input, paste all at once or enter line by line. Press Enter on an empty line to finish.');
-    console.log(`Type ${chalk.cyan('q')} to quit the interactive mode.`);
+    console.log('For multiline input, paste all at once or enter line by line (empty lines are included).');
+    console.log(`Input mode will exit after ~5 seconds of inactivity, or when you press ${chalk.cyan('Ctrl+D')} or ${chalk.cyan('Ctrl+C')}.`);
+    console.log(`Type ${chalk.cyan('q')} to quit the interactive mode completely.`);
     console.log('Processed text will be copied to your clipboard automatically.\n');
   }
 
@@ -49,12 +50,18 @@ export class InteractiveMode {
    */
   private showHelp(): void {
     console.log(chalk.bold(chalk.yellow('\n=== HELP ===\n')));
-    console.log(`${chalk.cyan('q')}: Quit interactive mode (recommended way to exit)`);
+    console.log(`${chalk.cyan('q')}: Quit interactive mode (recommended way to exit completely)`);
     console.log(`${chalk.cyan('h')}: Show this help information`);
     console.log(`${chalk.cyan('v')}: Toggle verbose mode`);
     console.log(`${chalk.cyan('b')}: Toggle batch mode`);
     console.log(`${chalk.cyan('c')}: Clear input buffer`);
+    console.log(`${chalk.cyan('Ctrl+D')}: Finish multiline input and process it (works in most terminals)`);
     console.log(`${chalk.cyan('Ctrl+C')}: Exit immediately (may not work in all terminals)\n`);
+    
+    console.log(`${chalk.bold('Input Behavior')}:`);
+    console.log(`- Empty lines are included in your input (not used as input termination)`);
+    console.log(`- Input mode will exit after ~5 seconds of inactivity`);
+    console.log(`- You can press ${chalk.cyan('Ctrl+D')} or ${chalk.cyan('Ctrl+C')} to finish input manually\n`);
     
     console.log(`${chalk.bold('Batch Mode')}: When enabled, stays in input mode after processing`);
     console.log(`${chalk.bold('Verbose Mode')}: When enabled, shows additional processing details\n`);
@@ -88,25 +95,46 @@ export class InteractiveMode {
       input = line;
       
       // Allow the user to continue pasting or adding more lines
-      // Keep reading lines until an empty line is entered
+      // Keep reading lines until timeout or Ctrl+D/Ctrl+C
       let multilineInput = false;
       
       if (input.includes('\n')) {
         // Handle pasted multiline text
         multilineInput = true;
       } else {
-        console.log(chalk.dim('Continue entering text, or press Enter on an empty line to finish:'));
+        console.log(chalk.dim('Continue entering text. Press Ctrl+D or Ctrl+C to finish input.'));
+        console.log(chalk.dim('Empty lines are included in the input. Input will finish after ~5 seconds of inactivity.'));
         
         let collectingInput = true;
+        let lastInputTime = Date.now();
+        const inputTimeoutMs = 5000; // 5 seconds of inactivity timeout
+        
         while (collectingInput) {
-          const additionalLine = readlineSync.question('');
+          // Set a non-blocking timeout to check for inactivity
+          const timeoutId = setTimeout(() => {
+            // Check if we've been inactive for the timeout period
+            if (Date.now() - lastInputTime >= inputTimeoutMs) {
+              collectingInput = false;
+              // We can't interrupt readline, but we'll stop adding lines after this
+              console.log(chalk.yellow('\nInput timeout reached. Processing input...'));
+            }
+          }, inputTimeoutMs + 100); // Add a little buffer
           
-          // Empty line signals end of input
-          if (additionalLine.trim() === '') {
-            collectingInput = false;
-          } else {
+          try {
+            const additionalLine = readlineSync.question('');
+            clearTimeout(timeoutId); // Clear the timeout since we got input
+            
+            // Update the last input time regardless of empty line or not
+            lastInputTime = Date.now();
+            
+            // Add the line to the input (even if empty)
             input += '\n' + additionalLine;
             multilineInput = true;
+          } catch (err) {
+            // Catch any errors like Ctrl+D/Ctrl+C
+            clearTimeout(timeoutId);
+            collectingInput = false;
+            console.log(chalk.yellow('\nInput terminated. Processing available input...'));
           }
         }
       }
