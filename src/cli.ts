@@ -92,7 +92,7 @@ Deslopify - Clean up text by removing/translating common "slop" patterns
 Usage: deslopify [options]
 
 Options:
-  -i, --input <file>         Input file (if not provided, reads from stdin)
+  --input <file>              Input file (if not provided, reads from stdin)
   -o, --output <file>        Output file (if not provided, writes to stdout)
   --skip-chars               Skip character replacements
   --skip-phrases             Skip phrase removals
@@ -107,7 +107,7 @@ Options:
   --no-preserve-codeblocks   Don't preserve whitespace in code blocks
   --remove-all-emoji         Remove all emoji characters from text
   --remove-overused-emoji    Remove commonly overused emoji and emoji clusters
-  -i, --interactive          Launch interactive mode to process text from clipboard
+  --interactive              Launch interactive mode to process text from clipboard
   -h, --help                 Show this help message
   
 Examples:
@@ -116,7 +116,7 @@ Examples:
   deslopify --paragraph-spacing double < input.txt > output.txt
   cat input.txt | deslopify > output.txt
   deslopify --remove-all-emoji < input.txt > output.txt
-  deslopify --interactive
+  deslopify --interactive       # Start interactive mode (type 'q' to quit)
   `);
 }
 
