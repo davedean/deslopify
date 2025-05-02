@@ -30,9 +30,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/deslop/deslopifier"
+    "url": "https://github.com/davedean/deslopify"
   },
-  "author": "",
+  "bugs": "https://github.com/davedean/deslopify/issues",
+  "homepage": "https://github.com/davedean/deslopify/",
+  "author": "David Dean <dave.dean@gmail.com> (http://github.com/davedean/)",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^29.5.0",
