@@ -1,57 +1,60 @@
 import { Deslopifier } from '../src/index';
 import { InteractiveMode } from '../src/interactive';
 
-// Mock the dependencies
-jest.mock('readline-sync', () => ({
-  question: jest.fn(),
-  keyInYNStrict: jest.fn(),
-  keyInSelect: jest.fn(),
-}));
+// Mock dependencies
 jest.mock('clipboardy', () => ({
-  writeSync: jest.fn(),
-  readSync: jest.fn(),
-}));
-jest.mock('chalk', () => ({
-  green: jest.fn((text) => `GREEN:${text}`),
-  yellow: jest.fn((text) => `YELLOW:${text}`),
-  blue: jest.fn((text) => `BLUE:${text}`),
-  red: jest.fn((text) => `RED:${text}`),
-  cyan: jest.fn((text) => `CYAN:${text}`),
-  bold: jest.fn((text) => `BOLD:${text}`),
-  dim: jest.fn((text) => `DIM:${text}`)
+  writeSync: jest.fn()
 }));
 
-// Mock setTimeout to immediately execute callback for testing
-jest.useFakeTimers();
+jest.mock('chalk', () => ({
+  green: jest.fn((text) => `GREEN:${text}`),
+  cyan: jest.fn((text) => `CYAN:${text}`),
+  red: jest.fn((text) => `RED:${text}`)
+}));
+
+// Mock process.stdin
+const mockStdin = {
+  setEncoding: jest.fn(),
+  resume: jest.fn(),
+  on: jest.fn()
+};
+
+// Original process.stdin
+const originalStdin = process.stdin;
 
 describe('InteractiveMode', () => {
   let mockDeslopifier: Deslopifier;
   let interactiveMode: InteractiveMode;
-  let mockStdout: jest.SpyInstance;
-  let mockStdin: jest.SpyInstance;
   let mockConsoleLog: jest.SpyInstance;
-  let mockExit: jest.SpyInstance;
+  let mockProcessOn: jest.SpyInstance;
   
   beforeEach(() => {
+    // Replace process.stdin with our mock
+    Object.defineProperty(process, 'stdin', {
+      value: mockStdin,
+      writable: true
+    });
+    
     mockDeslopifier = new Deslopifier();
     jest.spyOn(mockDeslopifier, 'process').mockImplementation((text) => `processed:${text}`);
     
-    // Mock process.exit
-    mockExit = jest.spyOn(process, 'exit').mockImplementation((code) => {
-      throw new Error(`Process.exit called with code: ${code}`);
-    });
-    
-    // Mock stdout write
-    mockStdout = jest.spyOn(process.stdout, 'write').mockImplementation(() => true);
-    
     // Mock console.log
     mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
+    
+    // Mock process.on
+    mockProcessOn = jest.spyOn(process, 'on').mockImplementation();
     
     interactiveMode = new InteractiveMode(mockDeslopifier);
   });
   
   afterEach(() => {
     jest.clearAllMocks();
+    
+    // Restore original process.stdin
+    Object.defineProperty(process, 'stdin', {
+      value: originalStdin,
+      writable: true
+    });
   });
   
   test('should initialize correctly', () => {
@@ -71,105 +74,53 @@ describe('InteractiveMode', () => {
     expect(processedText).toBe('processed:Test input');
   });
   
-  test('should copy processed text to clipboard', () => {
+  test('should set up stdin event handlers correctly', () => {
+    // Force NODE_ENV to not be 'test' so collectInput runs
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+    
+    interactiveMode.start();
+    
+    // Check that stdin was set up correctly
+    expect(mockStdin.setEncoding).toHaveBeenCalledWith('utf8');
+    expect(mockStdin.resume).toHaveBeenCalled();
+    expect(mockStdin.on).toHaveBeenCalledWith('data', expect.any(Function));
+    
+    // Check that SIGINT handler was added
+    expect(mockProcessOn).toHaveBeenCalledWith('SIGINT', expect.any(Function));
+    
+    // Restore original NODE_ENV
+    process.env.NODE_ENV = originalNodeEnv;
+  });
+  
+  test('should process input after timeout and copy to clipboard', () => {
+    // Setup
+    jest.useFakeTimers();
     const clipboardy = require('clipboardy');
     
-    const inputText = 'Test input';
-    interactiveMode.processText(inputText);
-    interactiveMode.copyToClipboard('processed:Test input');
+    // Force NODE_ENV to not be 'test' so collectInput runs
+    const originalNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
     
-    expect(clipboardy.writeSync).toHaveBeenCalledWith('processed:Test input');
-  });
-  
-  test('should handle keyboard shortcuts correctly', () => {
-    const readlineSync = require('readline-sync');
-    readlineSync.keyInYNStrict.mockReturnValue(true);
+    // Start interactive mode
+    interactiveMode.start();
     
-    // We need to mock the quit functionality for tests
-    // Skip testing 'q' key since it calls process.exit(0)
+    // Capture the data callback
+    const dataCallback = mockStdin.on.mock.calls.find(call => call[0] === 'data')[1];
     
-    // Simulate 'h' key press for help
-    interactiveMode.handleKeyPress('h');
-    expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('HELP'));
+    // Simulate input
+    dataCallback('Sample input text');
     
-    // Simulate 'v' key to toggle verbose mode
-    const initialVerboseState = interactiveMode.isVerboseMode();
-    interactiveMode.handleKeyPress('v');
-    expect(interactiveMode.isVerboseMode()).toBe(!initialVerboseState);
+    // Fast-forward timer
+    jest.advanceTimersByTime(500);
     
-    // Simulate 'b' key to toggle batch mode
-    const initialBatchState = interactiveMode.isBatchMode();
-    interactiveMode.handleKeyPress('b');
-    expect(interactiveMode.isBatchMode()).toBe(!initialBatchState);
+    // Verify
+    expect(mockDeslopifier.process).toHaveBeenCalledWith('Sample input text');
+    expect(clipboardy.writeSync).toHaveBeenCalledWith('processed:Sample input text');
+    expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('Processed text copied to clipboard!'));
     
-    // Simulate 'c' key to clear input buffer
-    interactiveMode.handleKeyPress('c');
-    expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('Input buffer cleared'));
-  });
-  
-  test('should display status line with current settings', () => {
-    interactiveMode.showStatusLine();
-    expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('STATUS'));
-    expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('Batch Mode'));
-    expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('Verbose'));
-  });
-  
-  test('should show progress indicator for longer texts', () => {
-    const longText = 'a'.repeat(1000);
-    interactiveMode.processText(longText);
-    
-    // Check that progress indicators were shown
-    expect(mockStdout.mock.calls.some(call => 
-      call[0] && call[0].toString().includes('Processing')
-    )).toBeTruthy();
-  });
-  
-  test('should clear input buffer when requested', () => {
-    interactiveMode.clearInputBuffer();
-    expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('Input buffer cleared'));
-  });
-  
-  test('should handle empty lines as part of multiline input', () => {
-    // Create a simple test to verify our multiline input behavior
-    
-    // Mock readline-sync behavior for this test
-    const readlineSync = require('readline-sync');
-    
-    // Create test input that includes empty lines
-    const testInput = [
-      'Line 1',
-      '', // Empty line should be included, not terminate input
-      'Line 3',
-      '' // Another empty line
-    ];
-    
-    // Set up mock for readline.question to return our test input in sequence
-    testInput.forEach((line, index) => {
-      readlineSync.question.mockReturnValueOnce(line);
-    });
-    
-    // We want to simulate a function similar to what happens in the mainLoop
-    // This is a simplified version of the multiline input collection
-    const collectInput = () => {
-      let input = readlineSync.question(); // Get first line
-      let multilineInput = true;
-      
-      // Similar to the actual implementation, but simplified for testing
-      for (let i = 1; i < testInput.length; i++) {
-        // Add all lines including empty ones
-        input += '\n' + readlineSync.question();
-      }
-      
-      return input;
-    };
-    
-    // Call our test function to collect input
-    const collectedInput = collectInput();
-    
-    // Verify that empty lines are included in the input, not used as termination
-    expect(collectedInput).toBe('Line 1\n\nLine 3\n');
-    
-    // Verify the correct number of calls to question
-    expect(readlineSync.question).toHaveBeenCalledTimes(testInput.length);
+    // Cleanup
+    process.env.NODE_ENV = originalNodeEnv;
+    jest.useRealTimers();
   });
 });
