@@ -9,6 +9,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Deslopifier, DeslopifierOptions } from './index';
+import { InteractiveMode } from './interactive';
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -27,12 +28,13 @@ let preserveCodeBlocks = true;
 let headingStyle: 'atx' | 'setext' = 'atx';
 let removeAllEmoji = false;
 let removeOverusedEmoji = false;
+let interactiveMode = false;
 
 // Process arguments
 for (let i = 0; i < args.length; i++) {
   const arg = args[i];
   
-  if (arg === '--input' || arg === '-i') {
+  if (arg === '--input') {
     inputFile = args[++i];
   } else if (arg === '--output' || arg === '-o') {
     outputFile = args[++i];
@@ -74,6 +76,8 @@ for (let i = 0; i < args.length; i++) {
     removeAllEmoji = true;
   } else if (arg === '--remove-overused-emoji') {
     removeOverusedEmoji = true;
+  } else if (arg === '--interactive' || arg === '-i') {
+    interactiveMode = true;
   } else if (arg === '--help' || arg === '-h') {
     printHelp();
     process.exit(0);
@@ -103,6 +107,7 @@ Options:
   --no-preserve-codeblocks   Don't preserve whitespace in code blocks
   --remove-all-emoji         Remove all emoji characters from text
   --remove-overused-emoji    Remove commonly overused emoji and emoji clusters
+  -i, --interactive          Launch interactive mode to process text from clipboard
   -h, --help                 Show this help message
   
 Examples:
@@ -111,15 +116,13 @@ Examples:
   deslopify --paragraph-spacing double < input.txt > output.txt
   cat input.txt | deslopify > output.txt
   deslopify --remove-all-emoji < input.txt > output.txt
+  deslopify --interactive
   `);
 }
 
 // Main function
 async function main(): Promise<void> {
   try {
-    // Get input text
-    const inputText = await getInputText(inputFile);
-    
     // Configure options
     const options: DeslopifierOptions = {
       skipCharacterReplacement,
@@ -140,12 +143,20 @@ async function main(): Promise<void> {
         removeOverused: removeOverusedEmoji
       }
     };
-    
-    // Process the text
+
+    // Create deslopifier instance
     const deslopifier = new Deslopifier(options);
-    const outputText = deslopifier.process(inputText);
     
-    // Output the processed text
+    // Check if we're in interactive mode
+    if (interactiveMode) {
+      const interactive = new InteractiveMode(deslopifier);
+      interactive.start();
+      return; // InteractiveMode will handle its own process flow
+    }
+    
+    // Normal mode - process input and output
+    const inputText = await getInputText(inputFile);
+    const outputText = deslopifier.process(inputText);
     await outputResult(outputText, outputFile);
     
   } catch (error) {
