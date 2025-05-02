@@ -116,7 +116,8 @@ Examples:
   deslopify --paragraph-spacing double < input.txt > output.txt
   cat input.txt | deslopify > output.txt
   deslopify --remove-all-emoji < input.txt > output.txt
-  deslopify --interactive       # Start interactive mode (type 'q' to quit)
+  deslopify --interactive       # Start interactive mode (type 'q' to quit completely)
+                              # In multiline input, use Ctrl+D to finish input, or wait for timeout
   `);
 }
 
