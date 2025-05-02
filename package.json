@@ -11,7 +11,26 @@
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "test": "jest",
-    "start": "node dist/cli.js"
+    "start": "node dist/cli.js",
+    "prepublishOnly": "npm run lint && npm test && npm run build"
+  },
+  "keywords": [
+    "text-processing",
+    "nlp",
+    "cleanup",
+    "formatting",
+    "deslopify"
+  ],
+  "files": [
+    "dist",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deslop/deslopifier"
   },
   "author": "",
   "license": "MIT",
