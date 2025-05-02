@@ -47,14 +47,14 @@ export class DateTimeFormatter {
       // e.g., "3:45PM" -> "3:45 PM"
       {
         pattern: /(\d{1,2}:\d{2})([AP]M)/gi,
-        replacement: "$1 $2"
+        replacement: '$1 $2'
       },
       
       // Standardize time zones by ensuring space before abbreviation
       // e.g., "15:30EST" -> "15:30 EST"
       {
         pattern: /(\d{1,2}:\d{2})([A-Z]{3,4})/g,
-        replacement: "$1 $2"
+        replacement: '$1 $2'
       },
       
       // Preserve common time zone abbreviations

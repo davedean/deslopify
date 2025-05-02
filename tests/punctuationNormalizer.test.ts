@@ -58,8 +58,8 @@ describe('PunctuationNormalizer', () => {
   });
 
   test('balances quotes while recognizing apostrophes', () => {
-    expect(normalizer.normalize("It's not the 'complete phrase")).toContain("'complete phrase'");
-    expect(normalizer.normalize("Don't add quotes to words like don't and isn't")).toBe("Don't add quotes to words like don't and isn't");
+    expect(normalizer.normalize('It\'s not the \'complete phrase')).toContain('\'complete phrase\'');
+    expect(normalizer.normalize('Don\'t add quotes to words like don\'t and isn\'t')).toBe('Don\'t add quotes to words like don\'t and isn\'t');
   });
 
   test('option to disable fixing unbalanced delimiters', () => {
