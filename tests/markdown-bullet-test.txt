@@ -1,0 +1,9 @@
+This is a test of bullet points in markdown.
+
+Here's a list:
+
+• First item
+• Second item
+• Third item
+
+This is text after the list.

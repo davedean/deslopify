@@ -1,0 +1,8 @@
+Paragraph before list.
+
+• First item that is very long and wraps to a
+second line to demonstrate how line breaks work
+• Second item
+• Third item
+
+Paragraph after list.
