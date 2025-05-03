@@ -33,6 +33,10 @@ temp/
 .env.test
 .env.production
 
+# Aider
+.aider
+.aider*
+
 # Misc
 EOF < /dev/null
 **/.claude/settings.local.json
