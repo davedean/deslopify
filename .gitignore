@@ -37,6 +37,9 @@ temp/
 .aider
 .aider*
 
+# local files
+*.local*
+
 # Misc
 EOF < /dev/null
 **/.claude/settings.local.json
