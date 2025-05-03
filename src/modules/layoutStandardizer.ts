@@ -88,6 +88,12 @@ export class LayoutStandardizer {
         }
       },
       
+      // Preserve list items - add placeholder to ensure bullet points stay on separate lines
+      {
+        pattern: /^(\s*)([-*+•].*?)(\n)(?=\s*[-*+•])/gm,
+        replacement: '$1$2[LIST_ITEM_BREAK]'
+      },
+      
       // Preserve paragraph breaks (replace with a placeholder and restore)
       {
         pattern: /([^\n])\n\n([^\n])/g,
@@ -110,6 +116,12 @@ export class LayoutStandardizer {
       {
         pattern: /([.,:;!?])(\s*)$/gm,
         replacement: '$1'
+      },
+      
+      // Restore list items
+      {
+        pattern: /\[LIST_ITEM_BREAK\]/g,
+        replacement: '\n'
       },
       
       // Restore paragraph breaks
