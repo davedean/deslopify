@@ -1,0 +1,3 @@
+  * First bullet point with information.
+  * Second bullet point with details.
+  * Third bullet point with specifics. * Fourth bullet point on same line as third.

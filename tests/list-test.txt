@@ -1,0 +1,3 @@
+* First bullet point with some details.
+* Second bullet point with important information.
+* Third bullet point with specific notes.

@@ -1,0 +1,8 @@
+Here's a paragraph before the list.
+
+• First item
+• Second item with some details
+  that continue on another line
+• Third item
+
+Here's a paragraph after the list.
