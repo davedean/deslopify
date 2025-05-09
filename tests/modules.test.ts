@@ -6,9 +6,9 @@ import { AbbreviationHandler } from '../src/modules/abbreviationHandler';
 describe('CharacterReplacer', () => {
   const replacer = new CharacterReplacer();
 
-  test('handles bullet point standardization', () => {
+  test('converts bullet points to markdown list signifiers', () => {
     expect(replacer.replace('• First item\n○ Second item\n▪ Third item'))
-      .toBe('• First item\n• Second item\n• Third item');
+      .toBe('- First item\n- Second item\n- Third item');
   });
 
   test('preserves technical characters', () => {

@@ -163,6 +163,10 @@ The Deslopifier accepts the following options:
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
+## Developer Resources
+
+The [LLM_HINTS.md](LLM_HINTS.md) file contains additional information about the code structure, methods, and tips for running/testing the project. This file is particularly useful for LLMs (Large Language Models) to aid in understanding the codebase.
+
 ## Publishing to npm
 
 When publishing a new version:
@@ -182,4 +186,3 @@ The `prepublishOnly` script will automatically run linting, tests, and build bef
 ## License
 
 MIT
-

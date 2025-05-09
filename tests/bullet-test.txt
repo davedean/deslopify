@@ -1,0 +1,18 @@
+Testing various bullet point formats:
+
+• First item with bullet point
+· Second item with middle dot
+○ Third item with circle
+▪ Fourth item with square
+▫ Fifth item with white square
+➢ Sixth item with right arrowhead
+➤ Seventh item with right-pointing triangle
+★ Eighth item with star
+✓ Ninth item with checkmark
+✔ Tenth item with heavy checkmark
+
+This is a regular paragraph.
+
+- This is a markdown list item with hyphen
+* This is a markdown list item with asterisk
++ This is a markdown list item with plus

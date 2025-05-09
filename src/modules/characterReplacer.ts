@@ -38,17 +38,24 @@ export class CharacterReplacer {
       { pattern: /[\u201C\u201D]/g, replacement: '"' }, // Convert left and right double quotes to straight quotes
       { pattern: /[\u2018\u2019]/g, replacement: '\'' }, // Convert left and right single quotes to straight quotes
       
-      // Standardize bullet points and list markers
-      { pattern: /^(\s*)•\s+/gm, replacement: '$1• ' }, // Standardize bullet points with single space
-      { pattern: /^(\s*)·\s+/gm, replacement: '$1• ' }, // Convert middle dot to standard bullet
-      { pattern: /^(\s*)○\s+/gm, replacement: '$1• ' }, // Convert circle bullet to standard bullet
-      { pattern: /^(\s*)▪\s+/gm, replacement: '$1• ' }, // Convert square bullet to standard bullet
-      { pattern: /^(\s*)▫\s+/gm, replacement: '$1• ' }, // Convert white square bullet to standard bullet
-      { pattern: /^(\s*)➢\s+/gm, replacement: '$1• ' }, // Convert right arrowhead to standard bullet
-      { pattern: /^(\s*)➤\s+/gm, replacement: '$1• ' }, // Convert right-pointing triangle to standard bullet
-      { pattern: /^(\s*)★\s+/gm, replacement: '$1• ' }, // Convert star to standard bullet
-      { pattern: /^(\s*)✓\s+/gm, replacement: '$1• ' }, // Convert checkmark to standard bullet
-      { pattern: /^(\s*)✔\s+/gm, replacement: '$1• ' }, // Convert heavy checkmark to standard bullet
+      // Convert bullet points and list markers to markdown standard list signifiers
+      { pattern: /^(\s*)•\s+/gm, replacement: '$1- ' }, // Convert bullet point to markdown hyphen
+      { pattern: /^(\s*)·\s+/gm, replacement: '$1- ' }, // Convert middle dot to markdown hyphen
+      { pattern: /^(\s*)○\s+/gm, replacement: '$1- ' }, // Convert circle bullet to markdown hyphen
+      { pattern: /^(\s*)▪\s+/gm, replacement: '$1- ' }, // Convert square bullet to markdown hyphen
+      { pattern: /^(\s*)▫\s+/gm, replacement: '$1- ' }, // Convert white square bullet to markdown hyphen
+      { pattern: /^(\s*)➢\s+/gm, replacement: '$1- ' }, // Convert right arrowhead to markdown hyphen
+      { pattern: /^(\s*)➤\s+/gm, replacement: '$1- ' }, // Convert right-pointing triangle to markdown hyphen
+      { pattern: /^(\s*)★\s+/gm, replacement: '$1- ' }, // Convert star to markdown hyphen
+      { pattern: /^(\s*)✓\s+/gm, replacement: '$1- ' }, // Convert checkmark to markdown hyphen
+      { pattern: /^(\s*)✔\s+/gm, replacement: '$1- ' }, // Convert heavy checkmark to markdown hyphen
+      { pattern: /^(\s*)◦\s+/gm, replacement: '$1- ' }, // Convert white bullet to markdown hyphen
+      { pattern: /^(\s*)◆\s+/gm, replacement: '$1- ' }, // Convert black diamond to markdown hyphen
+      { pattern: /^(\s*)◇\s+/gm, replacement: '$1- ' }, // Convert white diamond to markdown hyphen
+      { pattern: /^(\s*)►\s+/gm, replacement: '$1- ' }, // Convert black right-pointing pointer to markdown hyphen
+      { pattern: /^(\s*)❖\s+/gm, replacement: '$1- ' }, // Convert black diamond minus white X to markdown hyphen
+      { pattern: /^(\s*)⦿\s+/gm, replacement: '$1- ' }, // Convert circled bullet to markdown hyphen
+      { pattern: /^(\s*)⁃\s+/gm, replacement: '$1- ' }, // Convert hyphen bullet to markdown hyphen
       
       // Preserve technical/scientific characters
       // These patterns match these symbols but don't replace them - acting as a passthrough
