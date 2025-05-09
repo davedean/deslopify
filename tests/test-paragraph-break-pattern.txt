@@ -1,0 +1,6 @@
+This is a paragraph.
+
+This is another paragraph.
+
+• This is a bullet.
+• This is another bullet.

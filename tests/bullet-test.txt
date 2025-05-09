@@ -16,3 +16,20 @@ This is a regular paragraph.
 - This is a markdown list item with hyphen
 * This is a markdown list item with asterisk
 + This is a markdown list item with plus
+
+Test file with bullet points
+
+Asterisk bullets:
+* First bullet point with some text.
+* Second bullet point with text.
+* Third bullet point with information.
+
+Dash bullets:
+- First dash bullet point with some text.
+- Second dash bullet point with text.
+- Third dash bullet point with information.
+
+Plus bullets:
++ First plus bullet point with some text.
++ Second plus bullet point with text.
++ Third plus bullet point with information.
