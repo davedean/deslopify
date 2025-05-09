@@ -3,13 +3,14 @@
  * 
  * Handles detection and removal of emoji characters from text
  */
+import { TextProcessingModule } from './moduleInterface';
 
 export interface EmojiOptions {
   removeAll?: boolean;
   removeOverused?: boolean;
 }
 
-export class EmojiHandler {
+export class EmojiHandler implements TextProcessingModule<RegExp> {
   private removeAll: boolean;
   private removeOverused: boolean;
   private overusedEmojiPatterns: RegExp[];
@@ -58,6 +59,25 @@ export class EmojiHandler {
     return text;
   }
 
+  /**
+   * Add a custom emoji pattern to the overused emoji list
+   * Implements TextProcessingModule.addMapping
+   */
+  public addMapping(pattern: RegExp, replacement: string | Function): void {
+    // For EmojiHandler, we only care about the pattern, not the replacement
+    this.addOverusedPattern(pattern);
+  }
+  
+  /**
+   * Add multiple emoji patterns to the overused emoji list
+   * Implements TextProcessingModule.addMappings
+   */
+  public addMappings(patterns: RegExp[]): void {
+    for (const pattern of patterns) {
+      this.addOverusedPattern(pattern);
+    }
+  }
+  
   /**
    * Add a custom emoji pattern to the overused emoji list
    */

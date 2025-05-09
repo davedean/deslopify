@@ -228,4 +228,19 @@ Paragraph,  with weird  spacing after punctuation!  Very strange.`;
       expect(result).toContain('Hello   World');
     });
   });
+  
+  describe('Code block preservation with text standardization', () => {
+    test('should correctly preserve code blocks while standardizing surrounding text', () => {
+      const standardizer = new LayoutStandardizer();
+      const input = 'Text with  multiple  spaces.\n\n```\ncode block with    preserved    spacing\n```\n\nMore text with  spaces.';
+      const result = standardizer.standardize(input);
+      
+      // Check that spaces are normalized outside code blocks
+      expect(result).toContain('Text with multiple spaces.');
+      expect(result).toContain('More text with spaces.');
+      
+      // Check that spaces are preserved inside code blocks
+      expect(result).toContain('```\ncode block with    preserved    spacing\n```');
+    });
+  });
 });

@@ -3,13 +3,14 @@
  * 
  * Handles normalizing punctuation in text
  */
+import { TextProcessingModule } from './moduleInterface';
 
 export interface PunctuationMapping {
   pattern: RegExp;
   replacement: string | ((match: string, ...args: any[]) => string);
 }
 
-export class PunctuationNormalizer {
+export class PunctuationNormalizer implements TextProcessingModule<PunctuationMapping> {
   private mappings: PunctuationMapping[];
   private shouldFixUnbalanced: boolean;
 
@@ -193,6 +194,14 @@ export class PunctuationNormalizer {
     return text;
   }
 
+  /**
+   * Process the input text by applying all punctuation normalizations
+   * Implements TextProcessingModule.process
+   */
+  public process(text: string): string {
+    return this.normalize(text);
+  }
+  
   /**
    * Apply all punctuation normalizations to the input text
    */

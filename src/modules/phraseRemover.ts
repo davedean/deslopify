@@ -3,13 +3,14 @@
  * 
  * Handles removing common phrases that add "slop" to the text
  */
+import { TextProcessingModule } from './moduleInterface';
 
 export interface PhrasePattern {
   pattern: string | RegExp;
   position: 'start' | 'end' | 'anywhere';
 }
 
-export class PhraseRemover {
+export class PhraseRemover implements TextProcessingModule<PhrasePattern> {
   private patterns: PhrasePattern[];
 
   constructor(patterns?: PhrasePattern[]) {
@@ -34,6 +35,15 @@ export class PhraseRemover {
 
   /**
    * Add a new phrase pattern to remove
+   * Implements TextProcessingModule.addMapping
+   */
+  public addMapping(pattern: string | RegExp, replacement: string | Function, position: 'start' | 'end' | 'anywhere'): void {
+    // For PhraseRemover, the replacement is always an empty string, so we ignore the replacement parameter
+    this.addPattern(pattern, position);
+  }
+  
+  /**
+   * Add a new phrase pattern to remove
    */
   public addPattern(pattern: string | RegExp, position: 'start' | 'end' | 'anywhere'): void {
     this.patterns.push({ pattern, position: position as 'start' | 'end' | 'anywhere' });
@@ -41,11 +51,27 @@ export class PhraseRemover {
 
   /**
    * Add multiple phrase patterns
+   * Implements TextProcessingModule.addMappings
+   */
+  public addMappings(patterns: PhrasePattern[]): void {
+    this.addPatterns(patterns);
+  }
+  
+  /**
+   * Add multiple phrase patterns
    */
   public addPatterns(patterns: PhrasePattern[]): void {
     this.patterns.push(...patterns);
   }
 
+  /**
+   * Process the input text by removing all matching phrases
+   * Implements TextProcessingModule.process
+   */
+  public process(text: string): string {
+    return this.remove(text);
+  }
+  
   /**
    * Remove all matching phrases from the input text based on their position
    */

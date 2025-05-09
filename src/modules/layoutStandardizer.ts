@@ -4,6 +4,7 @@
  * Handles standardizing text layout including paragraph spacing, heading formats,
  * indentation for lists and quotes, while preserving whitespace in code blocks.
  */
+import { TextProcessingModule } from './moduleInterface';
 
 export interface LayoutMapping {
   pattern: string | RegExp;
@@ -18,7 +19,7 @@ export interface LayoutOptions {
   quoteIndentation?: number; // Number of spaces for quote indentation
 }
 
-export class LayoutStandardizer {
+export class LayoutStandardizer implements TextProcessingModule<LayoutMapping> {
   private mappings: LayoutMapping[];
   private options: LayoutOptions;
 
@@ -134,6 +135,14 @@ export class LayoutStandardizer {
     this.mappings.push(...mappings);
   }
 
+  /**
+   * Process the input text by applying all layout standardizations
+   * Implements TextProcessingModule.process
+   */
+  public process(text: string): string {
+    return this.standardize(text);
+  }
+  
   /**
    * Apply all layout standardizations to the input text
    */

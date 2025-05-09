@@ -3,13 +3,14 @@
  * 
  * Handles replacing problematic characters with their clean equivalents
  */
+import { TextProcessingModule } from './moduleInterface';
 
 export interface CharacterMapping {
   pattern: string | RegExp;
   replacement: string | ((match: string) => string);
 }
 
-export class CharacterReplacer {
+export class CharacterReplacer implements TextProcessingModule<CharacterMapping> {
   private mappings: CharacterMapping[];
 
   constructor(mappings?: CharacterMapping[]) {
@@ -113,5 +114,12 @@ export class CharacterReplacer {
     }
     
     return result;
+  }
+  
+  /**
+   * Process the input text (implements TextProcessingModule interface)
+   */
+  public process(text: string): string {
+    return this.replace(text);
   }
 }

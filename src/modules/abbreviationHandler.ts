@@ -3,6 +3,7 @@
  * 
  * Handles standardizing abbreviations and technical terms
  */
+import { TextProcessingModule } from './moduleInterface';
 
 export interface AbbreviationMapping {
   pattern: RegExp;
@@ -10,7 +11,7 @@ export interface AbbreviationMapping {
   preserveCase?: boolean;
 }
 
-export class AbbreviationHandler {
+export class AbbreviationHandler implements TextProcessingModule<AbbreviationMapping> {
   private mappings: AbbreviationMapping[];
 
   constructor(mappings?: AbbreviationMapping[]) {

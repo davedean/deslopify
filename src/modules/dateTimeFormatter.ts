@@ -3,13 +3,14 @@
  * 
  * Handles standardizing date and time formats in text
  */
+import { TextProcessingModule } from './moduleInterface';
 
 export interface DateTimeMapping {
   pattern: RegExp;
   replacement: string | ((match: string, ...args: any[]) => string);
 }
 
-export class DateTimeFormatter {
+export class DateTimeFormatter implements TextProcessingModule<DateTimeMapping> {
   private mappings: DateTimeMapping[];
 
   constructor(mappings?: DateTimeMapping[]) {
@@ -79,6 +80,14 @@ export class DateTimeFormatter {
     this.mappings.push(...mappings);
   }
 
+  /**
+   * Process the input text by applying all date/time format standardizations
+   * Implements TextProcessingModule.process
+   */
+  public process(text: string): string {
+    return this.format(text);
+  }
+  
   /**
    * Apply all date/time format standardizations to the input text
    */

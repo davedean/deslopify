@@ -67,4 +67,21 @@ describe('PunctuationNormalizer', () => {
     expect(noFixNormalizer.normalize('Example (text')).toBe('Example (text');
     expect(noFixNormalizer.normalize('"Quoted text')).toBe('"Quoted text');
   });
+
+  describe('Edge cases', () => {
+    test('should handle complex nested delimiters', () => {
+      const normalizer = new PunctuationNormalizer();
+      expect(normalizer.normalize('This (has [nested {delimiters')).toBe('This (has [nested {delimiters)]}');
+    });
+    
+    test('should handle special case for single quotes vs apostrophes', () => {
+      const normalizer = new PunctuationNormalizer();
+      expect(normalizer.normalize('It\'s John\'s book with a \'quote')).toBe('It\'s John\'s book with a \'quote\'');
+    });
+    
+    test('should handle unbalanced delimiters in code-like contexts', () => {
+      const normalizer = new PunctuationNormalizer();
+      expect(normalizer.normalize('if (condition && anotherCondition')).toBe('if (condition && anotherCondition)');
+    });
+  });
 });

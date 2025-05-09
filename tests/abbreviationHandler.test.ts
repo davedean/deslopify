@@ -8,7 +8,7 @@ describe('AbbreviationHandler', () => {
     expect(handler.process('The time zone is utc'))
       .toBe('The time zone is UTC');
   });
-
+  
   test('respects case for certain terms', () => {
     expect(handler.process('during the vernal equinox'))
       .toBe('during the Vernal Equinox');
@@ -50,5 +50,16 @@ describe('AbbreviationHandler', () => {
     // Test both lowercase and capitalized versions
     expect(customHandler.process('during the spring')).toBe('during the Spring');
     expect(customHandler.process('Spring begins')).toBe('Spring begins');
+  });
+  
+  test('should handle special case terms with forced capitalization', () => {
+    const customHandler = new AbbreviationHandler();
+    // Test each special case term mentioned in lines 113-116
+    expect(customHandler.process('vernal equinox in january and february during spring'))
+      .toBe('Vernal Equinox in January and February during Spring');
+    
+    // Test a mix of capitalized and lowercase versions
+    expect(customHandler.process('Vernal equinox in January and february during Spring'))
+      .toBe('Vernal Equinox in January and February during Spring');
   });
 });
