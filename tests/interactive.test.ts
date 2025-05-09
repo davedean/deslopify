@@ -61,8 +61,8 @@ describe('InteractiveMode', () => {
     expect(interactiveMode).toBeInstanceOf(InteractiveMode);
   });
   
-  test('should show welcome message when started', () => {
-    interactiveMode.start();
+  test('should show welcome message when started', async () => {
+    await interactiveMode.start();
     expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('Deslopifier Interactive Mode'));
   });
   
@@ -74,12 +74,12 @@ describe('InteractiveMode', () => {
     expect(processedText).toBe('processed:Test input');
   });
   
-  test('should set up stdin event handlers correctly', () => {
+  test('should set up stdin event handlers correctly', async () => {
     // Force NODE_ENV to not be 'test' so collectInput runs
     const originalNodeEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'development';
     
-    interactiveMode.start();
+    await interactiveMode.start();
     
     // Check that stdin was set up correctly
     expect(mockStdin.setEncoding).toHaveBeenCalledWith('utf8');
@@ -93,7 +93,7 @@ describe('InteractiveMode', () => {
     process.env.NODE_ENV = originalNodeEnv;
   });
   
-  test('should process input after timeout and copy to clipboard', () => {
+  test('should process input after timeout and copy to clipboard', async () => {
     // Setup
     jest.useFakeTimers();
     const clipboardyImport = jest.requireMock('clipboardy');
@@ -103,7 +103,7 @@ describe('InteractiveMode', () => {
     process.env.NODE_ENV = 'development';
     
     // Start interactive mode
-    interactiveMode.start();
+    await interactiveMode.start();
     
     // Capture the data callback
     const dataCallback = mockStdin.on.mock.calls.find(call => call[0] === 'data')[1];

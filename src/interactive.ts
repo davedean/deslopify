@@ -1,14 +1,34 @@
 /**
  * Ultra-simplified Interactive Mode for Deslopifier
  * No fancy readline, just simple stdin processing
+ * 
+ * Using dynamic imports for ESM modules to maintain compatibility with CommonJS
  */
 
-import clipboardy from 'clipboardy';
-import chalk from 'chalk';
 import { Deslopifier } from './index';
+
+// Define types for dynamically imported modules
+type ClipboardyType = {
+  writeSync: (text: string) => void;
+};
+
+type ChalkType = {
+  green: (text: string) => string;
+  cyan: (text: string) => string;
+  red: (text: string) => string;
+};
+
+// Placeholder for chalk functions until the module is loaded
+const chalkPlaceholder: ChalkType = {
+  green: (text: string) => text,
+  cyan: (text: string) => text,
+  red: (text: string) => text
+};
 
 export class InteractiveMode {
   private deslopifier: Deslopifier;
+  private chalk: ChalkType = chalkPlaceholder;
+  private clipboardy: ClipboardyType | null = null;
 
   constructor(deslopifier: Deslopifier) {
     this.deslopifier = deslopifier;
@@ -17,8 +37,22 @@ export class InteractiveMode {
   /**
    * Start the interactive mode session
    */
-  public start(): void {
-    console.log(chalk.green('\n=== Deslopifier Interactive Mode ===\n'));
+  public async start(): Promise<void> {
+    // Dynamically import ESM modules
+    try {
+      const [clipboardyModule, chalkModule] = await Promise.all([
+        import('clipboardy'),
+        import('chalk')
+      ]);
+      
+      this.clipboardy = clipboardyModule.default;
+      this.chalk = chalkModule.default;
+    } catch (error) {
+      console.error('Failed to load required modules:', error);
+      // Continue with placeholder functions
+    }
+
+    console.log(this.chalk.green('\n=== Deslopifier Interactive Mode ===\n'));
     console.log('Enter or paste text. Auto-processes after 0.5s inactivity.');
     console.log('Press Ctrl+C to exit.\n');
     console.log('> ');
@@ -61,10 +95,15 @@ export class InteractiveMode {
           const processed = this.deslopifier.process(buffer);
           
           try {
-            clipboardy.writeSync(processed);
-            console.log(chalk.cyan('\nProcessed text copied to clipboard!'));
+            if (this.clipboardy) {
+              this.clipboardy.writeSync(processed);
+              console.log(this.chalk.cyan('\nProcessed text copied to clipboard!'));
+            } else {
+              console.log('\nProcessed text (clipboard functionality not available):');
+              console.log(processed);
+            }
           } catch (error) {
-            console.error(chalk.red('Failed to copy to clipboard: '), error);
+            console.error(this.chalk.red('Failed to copy to clipboard: '), error);
           }
           
           // Clear buffer
@@ -72,7 +111,7 @@ export class InteractiveMode {
         }
         
         // Show prompt for next input
-        console.log(chalk.green('\nWaiting for input...'));
+        console.log(this.chalk.green('\nWaiting for input...'));
         console.log('> ');
       }, TIMEOUT);
     });

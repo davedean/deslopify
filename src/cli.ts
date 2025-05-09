@@ -4,12 +4,36 @@
  * Deslopify CLI
  * 
  * Command-line interface for the deslopify tool
+ * Using dynamic imports for ESM modules to maintain compatibility with CommonJS
  */
 
 import fs from 'fs';
 import path from 'path';
 import { Deslopifier, DeslopifierOptions } from './index';
 import { InteractiveMode } from './interactive';
+
+// Define type for chalk module
+type ChalkType = {
+  green: (text: string) => string;
+  red: (text: string) => string;
+};
+
+// Placeholder for chalk functions until the module is loaded
+const chalk: ChalkType = {
+  green: (text: string) => text,
+  red: (text: string) => text
+};
+
+// Try to load chalk dynamically
+(async () => {
+  try {
+    const chalkModule = await import('chalk');
+    Object.assign(chalk, chalkModule.default);
+  } catch (error) {
+    // Continue with placeholder functions if chalk can't be loaded
+    console.error('Warning: chalk module could not be loaded. Continuing without colored output.');
+  }
+})();
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -86,7 +110,7 @@ for (let i = 0; i < args.length; i++) {
 
 // Print help message
 function printHelp(): void {
-  console.log(`
+  console.log(chalk.green(`
 Deslopify - Clean up text by removing/translating common "slop" patterns
 
 Usage: deslopify [options]
@@ -118,7 +142,7 @@ Examples:
   deslopify --remove-all-emoji < input.txt > output.txt
   deslopify --interactive       # Start interactive mode (type 'q' to quit completely)
                               # Multiline input automatically finishes after 0.5s of inactivity
-  `);
+  `));
 }
 
 // Main function
@@ -151,7 +175,7 @@ async function main(): Promise<void> {
     // Check if we're in interactive mode
     if (interactiveMode) {
       const interactive = new InteractiveMode(deslopifier);
-      interactive.start();
+      await interactive.start();
       return; // InteractiveMode will handle its own process flow
     }
     
@@ -161,7 +185,7 @@ async function main(): Promise<void> {
     await outputResult(outputText, outputFile);
     
   } catch (error) {
-    console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
     process.exit(1);
   }
 }
@@ -193,6 +217,6 @@ async function outputResult(text: string, filePath: string | null): Promise<void
 
 // Run the main function
 main().catch(error => {
-  console.error(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`);
+  console.error(chalk.red(`Unexpected error: ${error instanceof Error ? error.message : String(error)}`));
   process.exit(1);
 });
